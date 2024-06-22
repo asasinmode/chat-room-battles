@@ -3,9 +3,6 @@ export default defineNuxtConfig({
 	modules: ['@nuxthub/core', '@nuxt/eslint', '@unocss/nuxt'],
 	hub: {
 		database: true,
-		kv: true,
-		blob: true,
-		cache: true,
 	},
 	nitro: {
 		experimental: {
