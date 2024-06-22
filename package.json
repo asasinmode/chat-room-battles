@@ -1,0 +1,30 @@
+{
+	"name": "nuxthub-starter",
+	"type": "module",
+	"private": true,
+	"packageManager": "pnpm@9.4.0",
+	"scripts": {
+		"dev": "nuxt dev",
+		"build": "nuxt build",
+		"preview": "nuxt preview",
+		"deploy": "nuxthub deploy",
+		"postinstall": "nuxt prepare",
+		"lint": "eslint .",
+		"typecheck": "nuxt typecheck"
+	},
+	"dependencies": {
+		"@nuxt/eslint": "^0.3.13",
+		"@nuxthub/core": "^0.6.17",
+		"@unocss/nuxt": "^0.61.0",
+		"nuxt": "^3.12.2"
+	},
+	"devDependencies": {
+		"@antfu/eslint-config": "^2.21.1",
+		"@nuxt/eslint-config": "^0.3.13",
+		"eslint": "^9.5.0",
+		"eslint-plugin-format": "^0.1.2",
+		"typescript": "^5.5.2",
+		"vue-tsc": "^2.0.21",
+		"wrangler": "^3.61.0"
+	}
+}
