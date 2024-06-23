@@ -1,5 +1,6 @@
 // @ts-check
 import antfu from '@antfu/eslint-config';
+import unocss from '@unocss/eslint-config/flat';
 import withNuxt from './.nuxt/eslint.config.mjs';
 
 export default withNuxt(
@@ -14,5 +15,5 @@ export default withNuxt(
 			'style/brace-style': ['error', '1tbs'],
 		},
 		formatters: true,
-	}),
+	}, unocss),
 );

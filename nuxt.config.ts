@@ -15,5 +15,8 @@ export default defineNuxtConfig({
 			standalone: false,
 		},
 	},
-	css: ['~/assets/index.css'],
+	css: [
+		'@unocss/reset/tailwind.css',
+		'~/assets/index.css',
+	],
 });

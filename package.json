@@ -16,11 +16,15 @@
 		"@nuxt/eslint": "^0.3.13",
 		"@nuxthub/core": "^0.6.17",
 		"@unocss/nuxt": "^0.61.0",
+		"@unocss/reset": "^0.61.0",
 		"nuxt": "^3.12.2"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^2.21.1",
+		"@iconify-json/ph": "^1.1.13",
 		"@nuxt/eslint-config": "^0.3.13",
+		"@unocss/eslint-config": "^0.61.0",
+		"@unocss/preset-icons": "^0.61.0",
 		"eslint": "^9.5.0",
 		"eslint-plugin-format": "^0.1.2",
 		"typescript": "^5.5.2",
