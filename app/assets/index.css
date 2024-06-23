@@ -6,3 +6,11 @@
 :root {
 	color-scheme: light dark;
 }
+
+@media (prefers-reduced-motion) {
+	*,
+	*::before,
+	*::after {
+		transition-property: none !important;
+	}
+}
