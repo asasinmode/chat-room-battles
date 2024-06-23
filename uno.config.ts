@@ -23,5 +23,17 @@ export default defineConfig({
 			'translate-center': 'translate-x--1/2 translate-y--1/2',
 		},
 	],
+	variants: [
+		(matcher) => {
+			if (matcher.slice(0, 10) !== 'hoverable:') {
+				return matcher;
+			}
+
+			return {
+				matcher: matcher.slice(10),
+				selector: s => `${s}:hover, ${s}:focus-visible`,
+			};
+		},
+	],
 	blocklist: ['container'],
 });
