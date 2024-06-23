@@ -17,6 +17,7 @@ export default defineConfig({
 		transformerDirectives(),
 		transformerVariantGroup(),
 	],
+	blocklist: ['container'],
 	shortcuts: [
 		{
 			'flex-center': 'flex justify-center items-center',
@@ -35,5 +36,9 @@ export default defineConfig({
 			};
 		},
 	],
-	blocklist: ['container'],
+	theme: {
+		colors: {
+			buttonHover: 'var(--theme-button-hover-color)',
+		},
+	},
 });

@@ -1,0 +1,9 @@
+:root {
+	--theme-button-hover-color: theme('colors.zinc.1');
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--theme-button-hover-color: theme('colors.zinc.8');
+	}
+}
