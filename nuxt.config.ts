@@ -20,4 +20,9 @@ export default defineNuxtConfig({
 		'~/assets/index.css',
 		'~/assets/theme.css',
 	],
+	runtimeConfig: {
+		public: {
+			appUrl: 'http://localhost:3000',
+		},
+	},
 });
