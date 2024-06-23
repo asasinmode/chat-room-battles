@@ -15,4 +15,5 @@ export default defineNuxtConfig({
 			standalone: false,
 		},
 	},
+	css: ['~/assets/index.css'],
 });
