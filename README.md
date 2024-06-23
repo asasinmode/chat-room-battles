@@ -1,6 +1,6 @@
 # Chat Room Battles
 
-This is the repository for **Chat Room Battles**, an auto-battler where you construct messages with emojis then send them to battle against other players.
+This is the repository for **Chat Room Battles**, a text-based auto-battler where you construct messages with emojis then send them to battle against other players.
 
 # Contributing
 

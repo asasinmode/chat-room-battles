@@ -1,8 +1,10 @@
 {
-	"name": "nuxthub-starter",
+	"name": "chat-room-battles",
 	"type": "module",
 	"private": true,
 	"packageManager": "pnpm@9.4.0",
+	"author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
+	"license": "MPL-2.0",
 	"scripts": {
 		"dev": "nuxt dev",
 		"build": "nuxt build",
