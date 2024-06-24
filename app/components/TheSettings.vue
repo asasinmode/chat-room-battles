@@ -1,24 +1,51 @@
 <script setup lang="ts">
+const colorMode = useColorMode();
+
 const dialog = ref<HTMLDialogElement>();
 
-function closeAndSave() {
-	dialog.value?.close();
+let initialValues = {
+	colorMode: colorMode.preference,
+};
+
+function openDialog() {
+	dialog.value?.showModal();
+
+	initialValues = {
+		colorMode: colorMode.preference,
+	};
+}
+
+function closeSettings() {
+	if (!dialog.value) {
+		console.warn('dialog closed without ref value');
+		return;
+	}
+
+	if (dialog.value.returnValue === 'cancel') {
+		colorMode.preference = initialValues.colorMode;
+	}
 }
 </script>
 
 <template>
-	<button class="mainMenuLink" @click="dialog?.showModal()">
+	<button class="mainMenuLink" @click="openDialog">
 		settings
 	</button>
-	<dialog ref="dialog" class="w-xl px-4 py-3 shadow-lg">
+	<dialog ref="dialog" class="w-xl px-4 py-3 shadow-lg" @close="closeSettings">
 		<h1 class="mb-4 text-center text-6 font-700">
 			Settings
 		</h1>
 		<form class="grid grid-cols-2 gap-x-4 gap-y-2">
+			<fieldset class="col-span-full">
+				<legend>Color mode</legend>
+				<input v-model="colorMode.preference" type="radio" name="colorMode" value="light">
+				<input v-model="colorMode.preference" type="radio" name="colorMode" value="dark">
+				<input v-model="colorMode.preference" type="radio" name="colorMode" value="system">
+			</fieldset>
 			<button value="cancel" formmethod="dialog" class="button-zinc-7 w-fit justify-self-end -mr-2 hoverable:bg-zinc-6">
 				cancel
 			</button>
-			<button class="button-emerald-6 ml-2 w-fit uppercase hoverable:bg-emerald-5" @click.prevent="closeAndSave">
+			<button value="default" class="button-emerald-6 ml-2 w-fit uppercase hoverable:bg-emerald-5" @click.prevent="dialog?.close('save')">
 				save
 			</button>
 		</form>

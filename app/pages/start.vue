@@ -17,7 +17,7 @@ const roomCodeToJoin = ref('');
 					id="roomCode"
 					v-model="roomCodeToJoin"
 					placeholder="123456"
-					class="bg-button-hover min-w-0 w-18 justify-self-center rounded-lg px-1 py-1 text-center"
+					class="min-w-0 w-18 justify-self-center rounded-lg px-1 py-1 text-center"
 				>
 				<NuxtLink
 					:to="`/play?joinRoom=${roomCodeToJoin}`"
@@ -28,7 +28,7 @@ const roomCodeToJoin = ref('');
 			</div>
 		</div>
 
-		<p class="mx-auto my-4 w-fit b-(2 yellow) rounded-lg bg-yellow-1 px-3 py-1 text-center text-5 dark:bg-yellow-950">
+		<p class="mx-auto my-4 w-fit b-(2 yellow) rounded-lg bg-yellow-1 px-3 py-1 text-center text-5">
 			<span class="i-ph-warning mr-1 inline-block size-6 align-middle -mt-0.5" aria-hidden="true" />
 			At the moment only 1v1 is available
 			<span class="i-ph-warning ml-1 inline-block size-6 align-middle -mt-0.5" aria-hidden="true" />

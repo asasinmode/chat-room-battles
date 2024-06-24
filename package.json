@@ -1,6 +1,7 @@
 {
 	"name": "chat-room-battles",
 	"type": "module",
+	"version": "0.0.1-alpha",
 	"private": true,
 	"packageManager": "pnpm@9.4.0",
 	"author": "asasinmode <skin9470@gmail.com> (https://github.com/asasinmode/)",
@@ -25,6 +26,7 @@
 		"@antfu/eslint-config": "^2.21.1",
 		"@iconify-json/ph": "^1.1.13",
 		"@nuxt/eslint-config": "^0.3.13",
+		"@nuxtjs/color-mode": "^3.4.1",
 		"@unocss/eslint-config": "^0.61.0",
 		"@unocss/preset-icons": "^0.61.0",
 		"eslint": "^9.5.0",

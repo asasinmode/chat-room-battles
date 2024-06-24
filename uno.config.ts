@@ -8,9 +8,7 @@ import {
 
 export default defineConfig({
 	presets: [
-		presetUno({
-			dark: 'media',
-		}),
+		presetUno(),
 		presetIcons(),
 	],
 	transformers: [
@@ -37,9 +35,4 @@ export default defineConfig({
 			};
 		},
 	],
-	theme: {
-		colors: {
-			buttonHover: 'var(--theme-button-hover-color)',
-		},
-	},
 });

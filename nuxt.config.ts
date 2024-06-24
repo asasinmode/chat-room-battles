@@ -1,6 +1,5 @@
 export default defineNuxtConfig({
 	future: { compatibilityVersion: 4 },
-	modules: ['@nuxthub/core', '@nuxt/eslint', '@unocss/nuxt'],
 	hub: {
 		database: true,
 	},
@@ -15,10 +14,19 @@ export default defineNuxtConfig({
 			standalone: false,
 		},
 	},
+	colorMode: {
+		classSuffix: '',
+		storageKey: 'chat-room-battles-color-mode',
+	},
+	modules: [
+		'@nuxthub/core',
+		'@nuxt/eslint',
+		'@unocss/nuxt',
+		'@nuxtjs/color-mode',
+	],
 	css: [
 		'@unocss/reset/tailwind.css',
 		'~/assets/index.css',
-		'~/assets/theme.css',
 	],
 	runtimeConfig: {
 		public: {

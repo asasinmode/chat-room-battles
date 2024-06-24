@@ -9,11 +9,11 @@ const generatedRoomCode = 123456;
 			<h2 class="mr-auto truncate text-5">
 				Party Animals
 			</h2>
-			<button title="menu" class="hoverable:bg-button-hover aspect-1 w-10 flex-center rounded-1/2 -mr-3">
+			<button title="menu" class="aspect-1 w-10 flex-center rounded-1/2 -mr-3">
 				<span class="sr-only" aria-hidden="true">menu</span>
 				<div class="i-ph-list-bold size-5" />
 			</button>
-			<button title="information" class="hoverable:bg-button-hover aspect-1 w-10 flex-center rounded-1/2 -mr-2">
+			<button title="information" class="aspect-1 w-10 flex-center rounded-1/2 -mr-2">
 				<span class="sr-only" aria-hidden="true">information</span>
 				<div class="i-ph-info size-6" />
 			</button>
@@ -22,10 +22,10 @@ const generatedRoomCode = 123456;
 			<h3 class="font-center col-span-full mb-1 h-10 text-center font-600 leading-10 tracking-wider uppercase">
 				create room
 			</h3>
-			<span class="bg-button-hover col-span-2 w-fit justify-self-center rounded-lg px-2 py-1 text-black dark:text-white">
+			<span class="col-span-2 w-fit justify-self-center rounded-lg px-2 py-1 text-black">
 				<span class="text-zinc">{{ $config.public.appUrl }}/play?code=</span>{{ generatedRoomCode }}
 			</span>
-			<button class="bg-button-hover w-fit rounded-lg bg-sky-6 px-2 py-1 font-600 uppercase">
+			<button class="w-fit rounded-lg bg-sky-6 px-2 py-1 font-600 uppercase">
 				copy link
 			</button>
 			<p class="col-span-full mx-auto mt-4 w-sm">

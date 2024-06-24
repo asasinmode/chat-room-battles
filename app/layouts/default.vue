@@ -1,5 +1,5 @@
 <template>
-	<div class="mx-auto h-full max-w-xl w-full b-(x-2 black)">
+	<div class="mx-auto h-full max-w-xl w-full flex flex-col b-(x-2 black)">
 		<header class="h-12 flex items-center gap-3 b-(b-2 black) px-3">
 			<img src="/logo.webp" class="size-9">
 			<h2 class="mr-auto overflow-hidden whitespace-nowrap text-5 font-600">
@@ -8,7 +8,7 @@
 			<button
 				v-if="!$route.meta.isHomePage"
 				title="go back"
-				class="hoverable:bg-button-hover aspect-1 w-10 flex-center rounded-1/2 -mr-2"
+				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2"
 				@click="$router.back()"
 			>
 				<span class="sr-only">go back</span>
@@ -16,11 +16,14 @@
 			</button>
 		</header>
 		<slot />
+		<p class="mt-auto px-1 text-end text-3 text-zinc">
+			v0.0.1-alpha
+		</p>
 	</div>
 </template>
 
 <style>
 .mainMenuLink {
-	@apply 'hoverable:bg-button-hover block h-12 b-(b-2 black) px-3 text-center font-600 leading-11 tracking-wider uppercase';
+	@apply 'block h-12 b-(b-2 black) px-3 text-center font-600 leading-11 tracking-wider uppercase';
 }
 </style>

@@ -3,8 +3,12 @@
 	overflow: hidden;
 }
 
-:root {
-	color-scheme: light dark;
+html {
+	color-scheme: light;
+}
+
+html.dark {
+	color-scheme: dark;
 }
 
 @media (prefers-reduced-motion) {
