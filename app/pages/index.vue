@@ -1,7 +1,16 @@
+<script setup lang="ts">
+definePageMeta({
+	isHomePage: true,
+});
+</script>
+
 <template>
 	<nav class="flex flex-col">
-		<NuxtLink to="/start-game" class="hoverable:bg-button-hover block h-10 b-(b-2 black) px-3 text-center font-600 leading-9 tracking-wider uppercase">
+		<NuxtLink to="/start" class="mainMenuLink">
 			play
 		</NuxtLink>
+		<button class="mainMenuLink">
+			settings
+		</button>
 	</nav>
 </template>
