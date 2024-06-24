@@ -1,6 +1,6 @@
 <template>
 	<div class="mx-auto h-full max-w-xl w-full flex flex-col b-(x-2 black)">
-		<header class="h-12 flex items-center gap-3 b-(b-2 black) px-3">
+		<header class="h-12 flex shrink-0 items-center gap-3 b-(b-2 black) px-2">
 			<img src="/logo.webp" class="size-9">
 			<h2 class="mr-auto overflow-hidden whitespace-nowrap text-5 font-600">
 				Chat Room Battles <sup class="rounded bg-yellow-5 px-1 uppercase">alpha</sup>
@@ -16,14 +16,11 @@
 			</button>
 		</header>
 		<slot />
-		<p class="mt-auto px-1 text-end text-3 text-zinc">
-			v{{ useAppConfig().appVersion }}
-		</p>
 	</div>
 </template>
 
 <style>
 .mainMenuLink {
-	@apply 'block h-12 b-(b-2 black) px-3 text-center font-600 leading-11 tracking-wider uppercase hoverable:bg-zinc-2 dark:hoverable:bg-zinc-9';
+	@apply 'block h-12 b-(b-2 black) px-2 text-center font-600 leading-11 tracking-wider uppercase hoverable:bg-zinc-2 dark:hoverable:bg-zinc-9';
 }
 </style>

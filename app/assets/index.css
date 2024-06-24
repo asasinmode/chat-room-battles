@@ -11,6 +11,10 @@ html.dark {
 	color-scheme: dark;
 }
 
+.dark body {
+	background: theme('colors.zinc.950');
+}
+
 @media (prefers-reduced-motion) {
 	*,
 	*::before,
