@@ -1,6 +1,6 @@
 <template>
-	<div class="mx-auto h-full max-w-xl w-full flex flex-col b-(x-2 black)">
-		<header class="h-12 flex shrink-0 items-center gap-3 b-(b-2 black) px-2">
+	<div class="mx-auto h-full max-w-xl w-full flex flex-col b-(x-2 black) dark:b-white">
+		<header class="h-12 flex shrink-0 items-center gap-3 b-(b-2 black) px-2 dark:b-white">
 			<img src="/logo.webp" class="size-9">
 			<h2 class="mr-auto overflow-hidden whitespace-nowrap text-5 font-600">
 				Chat Room Battles <sup class="rounded bg-yellow-5 px-1 uppercase">alpha</sup>
@@ -8,7 +8,7 @@
 			<button
 				v-if="!$route.meta.isHomePage"
 				title="go back"
-				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2 hoverable:bg-zinc-2 dark:hoverable:bg-zinc-9"
+				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2 hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8"
 				@click="$router.back()"
 			>
 				<span class="sr-only">go back</span>
@@ -21,6 +21,6 @@
 
 <style>
 .mainMenuLink {
-	@apply 'block h-12 b-(b-2 black) px-2 text-center font-600 leading-11 tracking-wider uppercase hoverable:bg-zinc-2 dark:hoverable:bg-zinc-9';
+	@apply 'block h-12 b-(b-2 black) dark:b-white px-2 text-center font-600 leading-11 tracking-wider uppercase hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8';
 }
 </style>

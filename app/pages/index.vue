@@ -5,10 +5,16 @@ definePageMeta({
 </script>
 
 <template>
-	<nav class="flex flex-col">
-		<NuxtLink to="/start" class="mainMenuLink">
-			play
-		</NuxtLink>
-		<TheSettings />
-	</nav>
+	<div class="h-full flex flex-col">
+		<nav class="flex flex-col">
+			<NuxtLink to="/start" class="mainMenuLink">
+				play
+			</NuxtLink>
+			<TheSettings />
+		</nav>
+
+		<p class="mt-auto px-1 text-end text-3 text-zinc">
+			v{{ useAppConfig().appVersion }}
+		</p>
+	</div>
 </template>

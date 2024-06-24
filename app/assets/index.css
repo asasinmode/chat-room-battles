@@ -15,6 +15,10 @@ html.dark {
 	background: theme('colors.zinc.950');
 }
 
+.dark dialog {
+	background: theme('colors.zinc.900');
+}
+
 @media (prefers-reduced-motion) {
 	*,
 	*::before,
