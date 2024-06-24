@@ -1,3 +1,5 @@
+import { version } from './package.json';
+
 export default defineNuxtConfig({
 	future: { compatibilityVersion: 4 },
 	hub: {
@@ -28,6 +30,9 @@ export default defineNuxtConfig({
 		'@unocss/reset/tailwind.css',
 		'~/assets/index.css',
 	],
+	appConfig: {
+		appVersion: version,
+	},
 	runtimeConfig: {
 		public: {
 			appUrl: 'http://localhost:3000',

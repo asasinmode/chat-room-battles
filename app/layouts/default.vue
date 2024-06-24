@@ -8,7 +8,7 @@
 			<button
 				v-if="!$route.meta.isHomePage"
 				title="go back"
-				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2"
+				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2 hoverable:bg-zinc-2 dark:hoverable:bg-zinc-9"
 				@click="$router.back()"
 			>
 				<span class="sr-only">go back</span>
@@ -17,13 +17,13 @@
 		</header>
 		<slot />
 		<p class="mt-auto px-1 text-end text-3 text-zinc">
-			v0.0.1-alpha
+			v{{ useAppConfig().appVersion }}
 		</p>
 	</div>
 </template>
 
 <style>
 .mainMenuLink {
-	@apply 'block h-12 b-(b-2 black) px-3 text-center font-600 leading-11 tracking-wider uppercase';
+	@apply 'block h-12 b-(b-2 black) px-3 text-center font-600 leading-11 tracking-wider uppercase hoverable:bg-zinc-2 dark:hoverable:bg-zinc-9';
 }
 </style>
