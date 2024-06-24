@@ -21,7 +21,7 @@ const roomCodeToJoin = ref('');
 				>
 				<NuxtLink
 					:to="`/play?joinRoom=${roomCodeToJoin}`"
-					class="ml-3 w-fit self-end justify-self-start rounded-lg bg-blue-6 px-3 py-1 font-600 uppercase hoverable:bg-blue-5"
+					class="button-blue-6 ml-3 w-fit self-end justify-self-start hoverable:bg-blue-5"
 				>
 					Join
 				</NuxtLink>

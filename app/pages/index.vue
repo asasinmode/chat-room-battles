@@ -9,8 +9,6 @@ definePageMeta({
 		<NuxtLink to="/start" class="mainMenuLink">
 			play
 		</NuxtLink>
-		<button class="mainMenuLink">
-			settings
-		</button>
+		<TheSettings />
 	</nav>
 </template>

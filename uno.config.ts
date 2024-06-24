@@ -23,6 +23,7 @@ export default defineConfig({
 			'flex-center': 'flex justify-center items-center',
 			'translate-center': 'translate-x--1/2 translate-y--1/2',
 		},
+		[/^button[:-](.+)$/, ([, c]) => `px-3 py-1 font-600 uppercase rounded-lg bg-${c}`],
 	],
 	variants: [
 		(matcher) => {
