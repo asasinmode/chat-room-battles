@@ -35,8 +35,8 @@ const generatedRoomCode = 123456;
 			<h3 class="font-center col-span-full h-12 w-full px-2 text-center font-600 leading-11 tracking-wider uppercase">
 				join room
 			</h3>
-			<div class="flex gap-2 px-2">
-				<label for="roomCode" class="text-5">Code or link:</label>
+			<div class="flex items-center gap-2 px-2">
+				<label for="roomCode" class="h-fit">Code or link:</label>
 				<input
 					id="roomCode"
 					v-model="roomCodeToJoin"
