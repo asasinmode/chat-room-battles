@@ -15,5 +15,10 @@ export default withNuxt(
 			'style/brace-style': ['error', '1tbs'],
 		},
 		formatters: true,
+	}, {
+		files: ['server/**/*'],
+		rules: {
+			'no-console': 'off',
+		},
 	}, unocss),
 );

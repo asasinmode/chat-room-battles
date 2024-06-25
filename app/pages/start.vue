@@ -20,7 +20,7 @@ const generatedRoomCode = 123456;
 					<span class="col-span-2 w-fit justify-self-center rounded-lg bg-zinc-2 px-2 py-1 dark:bg-zinc-8">
 						<span class="text-zinc-5 dark:text-zinc">{{ $config.public.appUrl }}/play?code=</span>{{ generatedRoomCode }}
 					</span>
-					<button class="button-blue-4 w-fit rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5">
+					<button class="w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5">
 						copy link
 					</button>
 				</div>
@@ -56,7 +56,7 @@ const generatedRoomCode = 123456;
 				>
 				<NuxtLink
 					:to="`/play?joinRoom=${roomCodeToJoin}`"
-					class="button-blue-4 ml-3 w-fit self-end justify-self-start dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5"
+					class="ml-3 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5"
 				>
 					Join
 				</NuxtLink>

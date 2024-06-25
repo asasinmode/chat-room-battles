@@ -20,6 +20,8 @@
 		"@nuxthub/core": "^0.6.17",
 		"@unocss/nuxt": "^0.61.0",
 		"@unocss/reset": "^0.61.0",
+		"drizzle-orm": "^0.31.2",
+		"ksuid": "^3.0.0",
 		"nuxt": "^3.12.2"
 	},
 	"devDependencies": {
@@ -29,6 +31,8 @@
 		"@nuxtjs/color-mode": "^3.4.1",
 		"@unocss/eslint-config": "^0.61.0",
 		"@unocss/preset-icons": "^0.61.0",
+		"@vueuse/nuxt": "^10.11.0",
+		"drizzle-kit": "^0.22.7",
 		"eslint": "^9.5.0",
 		"eslint-plugin-format": "^0.1.2",
 		"typescript": "^5.5.2",

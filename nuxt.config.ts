@@ -8,6 +8,7 @@ export default defineNuxtConfig({
 	nitro: {
 		experimental: {
 			openAPI: true,
+			websocket: true,
 		},
 	},
 	devtools: { enabled: true },
@@ -25,6 +26,7 @@ export default defineNuxtConfig({
 		'@nuxt/eslint',
 		'@unocss/nuxt',
 		'@nuxtjs/color-mode',
+		'@vueuse/nuxt',
 	],
 	css: [
 		'@unocss/reset/tailwind.css',
