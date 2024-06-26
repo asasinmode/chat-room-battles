@@ -99,5 +99,9 @@ const generatedRoomCode = 123456;
 	.waiting-wavy-letter {
 		animation: none;
 	}
+
+	.wavy-dot {
+		animation: reduced-motion-wavy-dot 1.2s step-start infinite;
+	}
 }
 </style>
