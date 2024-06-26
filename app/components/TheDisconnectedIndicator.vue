@@ -1,5 +1,5 @@
 <template>
-	<article class="fixed right-2 top-2 b-(2 black) px-4 py-2 shadow-lg dark:b-white">
+	<article class="fixed right-2 top-2 b-(2 black) bg-white px-4 py-2 shadow-lg dark:b-white dark:bg-black">
 		<h1 class="mb-0.5 text-5 font-600">
 			Disconnected
 		</h1>
