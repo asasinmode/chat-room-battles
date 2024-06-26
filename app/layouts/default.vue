@@ -5,15 +5,15 @@
 			<h2 class="mr-auto overflow-hidden whitespace-nowrap text-5 font-600">
 				Chat Room Battles <sup class="rounded bg-yellow-5 px-1 uppercase dark:bg-yellow-7">alpha</sup>
 			</h2>
-			<button
+			<NuxtLink
 				v-if="!$route.meta.isHomePage"
 				title="go back"
 				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2 hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8"
-				@click="$router.back()"
+				to="/"
 			>
 				<span class="sr-only">go back</span>
 				<div class="i-ph-arrow-left-bold size-6" aria-hidden="true" />
-			</button>
+			</NuxtLink>
 		</header>
 		<slot />
 	</div>
