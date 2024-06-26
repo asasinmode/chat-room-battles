@@ -28,12 +28,12 @@ const generatedRoomCode = 123456;
 					Send it to your friend! <br>
 					They should paste the whole link into their browser or paste it in the "Join room" input.
 				</p>
-				<p class="mt-2 text-zinc tracking-tight">
+				<p v-once class="mt-2 text-zinc tracking-tight">
 					<span
 						v-for="(letter, index) of 'Waiting for another player to join the room...'.split('')"
 						:key="index"
 						class="wavy-letter inline-block"
-						:class="letter === ' ' ? 'w-1' : ''"
+						:class="letter === ' ' ? 'w-1' : letter === '.' ? 'wavy-dot' : ''"
 						:style="`--wave-index: ${index}`"
 					>
 						{{ letter }}
@@ -52,7 +52,7 @@ const generatedRoomCode = 123456;
 					id="roomCode"
 					v-model="roomCodeToJoin"
 					placeholder="123456"
-					class="min-w-0 w-18 justify-self-center rounded-lg bg-zinc-2 px-1 py-1 text-center dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc-4"
+					class="min-w-0 w-18 justify-self-center rounded-lg bg-zinc-2 px-1 py-1 text-center dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc"
 				>
 				<NuxtLink
 					:to="`/play?joinRoom=${roomCodeToJoin}`"
@@ -77,13 +77,8 @@ const generatedRoomCode = 123456;
 
 <style>
 .wavy-letter {
-	--reduced-animation-wavy-brightness-modifier: -0.2;
-	animation: letter-bounce 2s ease-in-out infinite;
-	animation-delay: calc(var(--wave-index) * 40ms);
-}
-
-.dark .wavy-letter {
-	--reduced-animation-wavy-brightness-modifier: 1;
+	animation: letter-bounce 2s ease-in-out calc(var(--wave-index) * 40ms)
+		infinite;
 }
 
 @keyframes letter-bounce {
@@ -101,19 +96,17 @@ const generatedRoomCode = 123456;
 }
 
 @media (prefers-reduced-motion) {
-	@keyframes letter-bounce {
-		0% {
-			filter: brightness(1);
-		}
+	.wavy-letter {
+		animation: none;
+	}
 
-		12.5% {
-			filter: brightness(
-				calc(0.7 + var(--reduced-animation-wavy-brightness-modifier))
-			);
-		}
+	.wavy-dot {
+		animation: reduced-motion-wavy-dot 1.2s step-start infinite;
+	}
 
-		25% {
-			filter: brightness(1);
+	@keyframes reduced-motion-wavy-dot {
+		50% {
+			opacity: 0;
 		}
 	}
 }
