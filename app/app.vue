@@ -12,4 +12,5 @@ useSeoMeta({
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
+	<TheDisconnectedIndicator />
 </template>
