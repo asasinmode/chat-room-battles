@@ -13,7 +13,7 @@ definePageMeta({
 			<TheSettings />
 		</nav>
 
-		<p class="mt-auto px-1 text-end text-3 text-zinc">
+		<p class="mt-auto px-1 text-end text-3 text-zinc-5 dark:text-zinc">
 			v{{ useAppConfig().appVersion }}
 		</p>
 	</div>

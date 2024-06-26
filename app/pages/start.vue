@@ -28,11 +28,11 @@ const generatedRoomCode = 123456;
 					Send it to your friend! <br>
 					They should paste the whole link into their browser or paste it in the "Join room" input.
 				</p>
-				<p v-once class="mt-2 text-zinc tracking-tight">
+				<p v-once class="mt-2 text-zinc-5 tracking-tight dark:text-zinc">
 					<span
 						v-for="(letter, index) of 'Waiting for another player to join the room...'.split('')"
 						:key="index"
-						class="wavy-letter inline-block"
+						class="waiting-wavy-letter inline-block"
 						:class="letter === ' ' ? 'w-1' : letter === '.' ? 'wavy-dot' : ''"
 						:style="`--wave-index: ${index}`"
 					>
@@ -69,45 +69,35 @@ const generatedRoomCode = 123456;
 			<span class="i-ph-warning ml-1 inline-block size-6 align-middle -mt-0.5" aria-hidden="true" />
 		</p>
 
-		<p class="mt-auto px-1 text-end text-3 text-zinc">
+		<p class="mt-auto px-1 text-end text-3 text-zinc-5 dark:text-zinc">
 			v{{ useAppConfig().appVersion }}
 		</p>
 	</section>
 </template>
 
 <style>
-.wavy-letter {
-	animation: letter-bounce 2s ease-in-out calc(var(--wave-index) * 40ms)
-		infinite;
+.waiting-wavy-letter {
+	animation: waiting-letter-bounce 2.4s ease-in-out
+		calc(var(--wave-index) * 40ms) infinite;
 }
 
-@keyframes letter-bounce {
+@keyframes waiting-letter-bounce {
 	0% {
 		translate: 0 0;
 	}
 
-	12.5% {
+	8.5% {
 		translate: 0 -15%;
 	}
 
-	25% {
+	17% {
 		translate: 0 0;
 	}
 }
 
 @media (prefers-reduced-motion) {
-	.wavy-letter {
+	.waiting-wavy-letter {
 		animation: none;
-	}
-
-	.wavy-dot {
-		animation: reduced-motion-wavy-dot 1.2s step-start infinite;
-	}
-
-	@keyframes reduced-motion-wavy-dot {
-		50% {
-			opacity: 0;
-		}
 	}
 }
 </style>
