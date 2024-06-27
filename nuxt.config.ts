@@ -11,6 +11,9 @@ export default defineNuxtConfig({
 			websocket: true,
 		},
 	},
+	experimental: {
+		typedPages: true,
+	},
 	devtools: { enabled: true },
 	eslint: {
 		config: {
@@ -33,11 +36,6 @@ export default defineNuxtConfig({
 		'~/assets/index.css',
 	],
 	appConfig: {
-		appVersion: version,
-	},
-	runtimeConfig: {
-		public: {
-			appUrl: 'http://localhost:3000',
-		},
+		version,
 	},
 });
