@@ -7,7 +7,7 @@
 			<span
 				v-for="(letter, index) of 'Attemping to reconnect...'.split('')"
 				:key="index"
-				class="disconnected-wavy-letter inline-block"
+				class="wavy-letter-disconnected inline-block"
 				:class="letter === ' ' ? 'w-1' : letter === '.' ? 'wavy-dot' : ''"
 				:style="`--wave-index: ${index}`"
 			>
@@ -18,12 +18,12 @@
 </template>
 
 <style>
-.disconnected-wavy-letter {
-	animation: disconnected-letter-bounce 2s ease-in-out
+.wavy-letter-disconnected {
+	animation: letter-bounce-disconnected 2s ease-in-out
 		calc(var(--wave-index) * 40ms) infinite;
 }
 
-@keyframes disconnected-letter-bounce {
+@keyframes letter-bounce-disconnected {
 	0% {
 		translate: 0 0;
 	}
@@ -38,12 +38,12 @@
 }
 
 @media (prefers-reduced-motion) {
-	.disconnected-wavy-letter {
+	.wavy-letter-disconnected {
 		animation: none;
 	}
 
 	.wavy-dot {
-		animation: reduced-motion-wavy-dot 1.2s step-start infinite;
+		animation: reduced-motion-wavy-dot 1.2s step-start infinite !important;
 	}
 
 	@keyframes reduced-motion-wavy-dot {

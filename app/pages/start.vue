@@ -42,34 +42,3 @@ const roomCodeToJoin = ref('');
 		</p>
 	</section>
 </template>
-
-<style>
-.waiting-wavy-letter {
-	animation: waiting-letter-bounce 2.4s ease-in-out
-		calc(var(--wave-index) * 40ms) infinite;
-}
-
-@keyframes waiting-letter-bounce {
-	0% {
-		translate: 0 0;
-	}
-
-	8.5% {
-		translate: 0 -15%;
-	}
-
-	17% {
-		translate: 0 0;
-	}
-}
-
-@media (prefers-reduced-motion) {
-	.waiting-wavy-letter {
-		animation: none;
-	}
-
-	.wavy-dot {
-		animation: reduced-motion-wavy-dot 1.2s step-start infinite;
-	}
-}
-</style>
