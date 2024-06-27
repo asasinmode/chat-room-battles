@@ -1,6 +1,6 @@
 <script setup lang="ts">
 useSeoMeta({
-	title: 'Chat Room Battles',
+	titleTemplate: prefix => prefix ? `${prefix} - Chat Room Battles` : 'Chat Room Battles',
 	description: 'A text-based auto-battler where you construct emoji messages then send them to battle with other players',
 	robots: {
 		none: true,
@@ -12,5 +12,4 @@ useSeoMeta({
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
-	<TheDisconnectedIndicator />
 </template>

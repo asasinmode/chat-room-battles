@@ -1,7 +1,7 @@
 export function useApiWebsocket() {
 	const { protocol, host } = useRequestURL();
 
-	return useWebSocket(`${protocol === 'https' ? 'wss' : 'ws'}://${host}/_ws`, {
+	const ws = useWebSocket(`${protocol === 'https' ? 'wss' : 'ws'}://${host}/_ws`, {
 		// TMP
 		// heartbeat: {
 		// 	message: 'ping',
@@ -24,4 +24,6 @@ export function useApiWebsocket() {
 			console.log('got message', ws, ev);
 		},
 	});
+
+	return ws;
 };

@@ -1,46 +1,14 @@
 <script setup lang="ts">
+useSeoMeta({ title: 'Start game' });
+
 const roomCodeToJoin = ref('');
-const isCreatingRoom = ref(false);
-const generatedRoomCode = 123456;
 </script>
 
 <template>
 	<section class="h-full flex flex-col overflow-x-hidden overflow-y-auto">
-		<div class="flex flex-col items-center b-(b-2 black) dark:b-white" :class="isCreatingRoom ? 'pb-4' : ''">
-			<button
-				class="col-span-full h-[calc(3rem_-_2px)] w-full text-center font-600 leading-11 tracking-wider uppercase"
-				:class="isCreatingRoom ? '' : 'hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8'"
-				:disabled="isCreatingRoom"
-				@click="isCreatingRoom = true"
-			>
-				Create room
-			</button>
-			<template v-if="isCreatingRoom">
-				<div class="flex flex-wrap justify-center gap-x-5 gap-y-2 px-2">
-					<span class="col-span-2 w-fit justify-self-center rounded-lg bg-zinc-2 px-2 py-1 dark:bg-zinc-8">
-						<span class="text-zinc-5 dark:text-zinc">{{ $config.public.appUrl }}/play?code=</span>{{ generatedRoomCode }}
-					</span>
-					<button class="w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5">
-						copy link
-					</button>
-				</div>
-				<p class="col-span-full mt-4 max-w-sm px-2 text-center leading-snug">
-					Send it to your friend! <br>
-					They should paste the whole link into their browser or paste it in the "Join room" input.
-				</p>
-				<p v-once class="mt-2 text-zinc-5 tracking-tight dark:text-zinc">
-					<span
-						v-for="(letter, index) of 'Waiting for another player to join the room...'.split('')"
-						:key="index"
-						class="waiting-wavy-letter inline-block"
-						:class="letter === ' ' ? 'w-1' : letter === '.' ? 'wavy-dot' : ''"
-						:style="`--wave-index: ${index}`"
-					>
-						{{ letter }}
-					</span>
-				</p>
-			</template>
-		</div>
+		<NuxtLink to="/play?createRoom=" class="mainMenuLink">
+			create room
+		</NuxtLink>
 
 		<div class="flex flex-col items-center b-(b-2 black) pb-4 dark:b-white">
 			<h3 class="font-center col-span-full h-12 w-full px-2 text-center font-600 leading-11 tracking-wider uppercase">
@@ -70,7 +38,7 @@ const generatedRoomCode = 123456;
 		</p>
 
 		<p class="mt-auto px-1 text-end text-3 text-zinc-5 dark:text-zinc">
-			v{{ useAppConfig().appVersion }}
+			v{{ useAppConfig().version }}
 		</p>
 	</section>
 </template>

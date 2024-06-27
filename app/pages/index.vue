@@ -1,7 +1,5 @@
 <script setup lang="ts">
-definePageMeta({
-	isHomePage: true,
-});
+definePageMeta({ isHomePage: true });
 </script>
 
 <template>

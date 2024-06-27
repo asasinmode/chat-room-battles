@@ -42,10 +42,10 @@ function closeSettings() {
 				<input v-model="colorMode.preference" type="radio" name="colorMode" value="dark">
 				<input v-model="colorMode.preference" type="radio" name="colorMode" value="system">
 			</fieldset>
-			<button value="cancel" formmethod="dialog" class="button-zinc-2 w-fit justify-self-end -mr-2 dark:bg-zinc-8 hoverable:bg-zinc-3 dark:hoverable:bg-zinc-7">
+			<button value="cancel" formmethod="dialog" class="w-fit justify-self-end button-zinc-2 -mr-2 dark:bg-zinc-8 hoverable:bg-zinc-3 dark:hoverable:bg-zinc-7">
 				cancel
 			</button>
-			<button value="default" class="button-emerald-4 ml-2 w-fit uppercase dark:bg-emerald-7 hoverable:bg-emerald-5 dark:hoverable:bg-emerald-6" @click.prevent="dialog?.close('save')">
+			<button value="default" class="ml-2 w-fit button-emerald-4 uppercase dark:bg-emerald-7 hoverable:bg-emerald-5 dark:hoverable:bg-emerald-6" @click.prevent="dialog?.close('save')">
 				save
 			</button>
 		</form>
