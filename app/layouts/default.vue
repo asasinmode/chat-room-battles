@@ -21,6 +21,9 @@
 
 <style>
 .mainMenuLink {
-	@apply 'block h-12 b-(b-2 black) dark:b-white px-2 text-center font-600 leading-11 tracking-wider uppercase hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8';
+	@apply 'h-12 font-600 leading-11 tracking-wider uppercase block px-2 text-center';
+}
+.mainMenuLink.interactive {
+	@apply 'hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8';
 }
 </style>

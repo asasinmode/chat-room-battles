@@ -43,7 +43,7 @@ function copyRoomCodeLink() {
 <template>
 	<main class="">
 		<div v-if="isWaitingForPlayers" class="flex flex-col items-center pb-4">
-			<h1 class="h-12 font-600 leading-11 tracking-wider uppercase">
+			<h1 class="mainMenuLink">
 				Room code
 			</h1>
 			<div class="flex flex-wrap justify-center gap-x-5 gap-y-2 px-2">

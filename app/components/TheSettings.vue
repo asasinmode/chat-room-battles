@@ -25,12 +25,13 @@ function closeSettings() {
 		colorMode.preference = initialValues.colorMode;
 	}
 }
+
+defineExpose({
+	openDialog,
+});
 </script>
 
 <template>
-	<button class="mainMenuLink" @click="openDialog">
-		settings
-	</button>
 	<dialog ref="dialog" class="w-xl px-4 py-3 shadow-lg" @close="closeSettings">
 		<h1 class="mb-4 text-center text-6 font-700">
 			Settings
