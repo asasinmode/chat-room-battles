@@ -1,9 +1,7 @@
-// TODO could also be a composable if adding component here is complicated, then call it in app onMounted
-export default defineNuxtPlugin(() => {
-	console.log('ws plugin loaded');
+export function useApiWebsocket() {
+	const { protocol, host } = useRequestURL();
 
-	const isSecure = location.protocol === 'https:';
-	const ws = useWebSocket(`${isSecure ? 'wss' : 'ws'}://${location.host}/_ws`, {
+	return useWebSocket(`${protocol === 'https' ? 'wss' : 'ws'}://${host}/_ws`, {
 		// TMP
 		// heartbeat: {
 		// 	message: 'ping',
@@ -26,10 +24,4 @@ export default defineNuxtPlugin(() => {
 			console.log('got message', ws, ev);
 		},
 	});
-
-	return {
-		provide: {
-			hello: (msg: string) => `Hello ${msg}`,
-		},
-	};
-});
+};
