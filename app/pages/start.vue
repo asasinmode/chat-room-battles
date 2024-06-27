@@ -6,12 +6,12 @@ const roomCodeToJoin = ref('');
 
 <template>
 	<section class="h-full flex flex-col overflow-x-hidden overflow-y-auto">
-		<NuxtLink to="/play?createRoom=" class="mainMenuLink interactive b-(b-2 black) dark:b-white">
+		<NuxtLink to="/play?createRoom=" class="main-menu-link base-button-hoverable b-(b-2 black) dark:b-white">
 			create room
 		</NuxtLink>
 
 		<div class="flex flex-col items-center b-(b-2 black) pb-4 dark:b-white">
-			<h3 class="mainMenuLink col-span-full">
+			<h3 class="main-menu-link col-span-full">
 				join room
 			</h3>
 			<div class="flex items-center gap-2 px-2">

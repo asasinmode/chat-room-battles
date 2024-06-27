@@ -11,6 +11,8 @@ const roomCode = ref<string>();
 if ('createRoom' in route.query) {
 	console.log('useFetch create room then set code');
 
+	const {} = useFetch('/a');
+
 	roomCode.value = 'CREATED';
 } else if (route.query.join) {
 	console.log('joining room', route.query.join);
@@ -43,7 +45,7 @@ function copyRoomCodeLink() {
 <template>
 	<main class="">
 		<div v-if="isWaitingForPlayers" class="flex flex-col items-center pb-4">
-			<h1 class="mainMenuLink">
+			<h1 class="main-menu-link">
 				Room code
 			</h1>
 			<div class="flex flex-wrap justify-center gap-x-5 gap-y-2 px-2">

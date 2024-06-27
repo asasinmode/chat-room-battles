@@ -8,7 +8,7 @@
 			<NuxtLink
 				v-if="!$route.meta.isHomePage"
 				title="go back"
-				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2 hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8"
+				class="base-button-hoverable aspect-1 w-10 flex-center rounded-1/2 -mr-2"
 				to="/"
 			>
 				<span class="sr-only">go back</span>
@@ -18,12 +18,3 @@
 		<slot />
 	</div>
 </template>
-
-<style>
-.mainMenuLink {
-	@apply 'h-12 font-600 leading-11 tracking-wider uppercase block px-2 text-center';
-}
-.mainMenuLink.interactive {
-	@apply 'hoverable:bg-zinc-2 dark:hoverable:bg-zinc-8';
-}
-</style>
