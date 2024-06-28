@@ -2,6 +2,13 @@ import { version } from './package.json';
 
 export default defineNuxtConfig({
 	future: { compatibilityVersion: 4 },
+	typescript: {
+		tsConfig: {
+			compilerOptions: {
+				baseUrl: './',
+			},
+		},
+	},
 	hub: {
 		database: true,
 	},
