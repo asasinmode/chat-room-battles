@@ -11,7 +11,7 @@ const roomCode = ref<string>();
 if ('createRoom' in route.query) {
 	console.log('useFetch create room then set code');
 
-	const {} = useFetch('/a');
+	const response = useFetch('/api');
 
 	roomCode.value = 'CREATED';
 } else if (route.query.join) {
