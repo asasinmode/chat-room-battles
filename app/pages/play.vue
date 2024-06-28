@@ -9,24 +9,21 @@ const { origin } = useRequestURL();
 const roomCode = ref<string>();
 
 if ('createRoom' in route.query) {
-	console.log('useFetch create room then set code');
-
-	const response = useFetch('/api');
-
-	roomCode.value = 'CREATED';
+	const { data } = await useFetch('/api/rooms', { method: 'post' });
+	roomCode.value = data.value;
 } else if (route.query.join) {
-	console.log('joining room', route.query.join);
-	roomCode.value = 'JOINED';
+	const { data } = await useFetch(`/api/rooms/${route.query.join}`);
+	roomCode.value = data.value;
 }
 
-router.replace({ query: {} });
+// router.replace({ query: {} });
 
 const ws = undefined;
 const room = undefined;
 const isWaitingForPlayers = true;
 
 if (roomCode.value) {
-	console.log('gotta try to ws into room, potentially setting isRoomInvalid');
+	console.log('gotta try to ws into room, potentially setting isRoomInvalid', roomCode.value);
 }
 
 let isRoomInvalid = true;
