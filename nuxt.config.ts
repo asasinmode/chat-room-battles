@@ -16,6 +16,7 @@ export default defineNuxtConfig({
 		experimental: {
 			openAPI: true,
 			websocket: true,
+			tasks: true,
 		},
 	},
 	experimental: {
