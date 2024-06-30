@@ -10,7 +10,7 @@ const roomCode = ref<string>();
 
 if ('createRoom' in route.query) {
 	const { data } = await useFetch('/api/lobbies', { method: 'post' });
-	roomCode.value = data.value;
+	roomCode.value = data.value?.code;
 } else if (route.query.join) {
 	const { data } = await useFetch(`/api/lobbies/${route.query.join}`);
 	roomCode.value = data.value;
