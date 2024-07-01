@@ -1,38 +1,33 @@
 <script setup lang="ts">
+import type { IRoomWSPayload, IRoomWSResponse } from '~~/types/room';
+
 definePageMeta({ layout: 'game' });
 useSeoMeta({ title: 'Play' });
 
-const router = useRouter();
-const route = useRoute();
 const { origin } = useRequestURL();
+const route = useRoute();
+// const router = useRouter();
 
-const roomCode = ref<string>();
+const ws = useApiWebsocket<IRoomWSPayload, IRoomWSResponse>('_rooms', {
+	roomCreated(data) {
+		console.log('i got back', data);
+	},
+	tmp(data) {
+		console.log('tmp', data);
+	},
+});
 
-if ('createRoom' in route.query) {
-	const { data } = await useFetch('/api/lobbies', { method: 'post' });
-	roomCode.value = data.value?.code;
-} else if (route.query.join) {
-	const { data } = await useFetch(`/api/lobbies/${route.query.join}`);
-	roomCode.value = data.value;
-}
+ws.send('');
+
+// if ('createLobby' in route.query) {
+// 	ws.send('createLobby');
+// } else if (route.query.join) {
+// 	ws.send(`joinLobby=${route.query.join}`);
+// }
 
 // router.replace({ query: {} });
 
-const ws = undefined;
-const room = undefined;
-const isWaitingForPlayers = true;
-
-if (roomCode.value) {
-	console.log('gotta try to ws into room, potentially setting isRoomInvalid', roomCode.value);
-}
-
-let isRoomInvalid = true;
-
-if (ws && room) {
-	isRoomInvalid = false;
-}
-
-console.log('room invalid?', isRoomInvalid);
+const isWaitingForPlayers = ref(true);
 
 function copyRoomCodeLink() {
 	console.log('copying', `${origin}?join=<code-goes-here>`);
@@ -47,7 +42,7 @@ function copyRoomCodeLink() {
 			</h1>
 			<div class="flex flex-wrap justify-center gap-x-5 gap-y-2 px-2">
 				<span class="col-span-2 w-fit justify-self-center rounded-lg bg-zinc-2 px-2 py-1 dark:bg-zinc-8">
-					{{ roomCode }}
+					{{ 'A1B2C' }}
 				</span>
 				<button class="w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click="copyRoomCodeLink">
 					copy link

@@ -1,29 +1,28 @@
-export function useApiWebsocket() {
+export function useApiWebsocket<Payload, Response extends { type: string; data: any }>(
+	url: string,
+	messageHandlers: {
+		[K in Response['type']]: (data: Extract<Response, { type: K }>['data']) => void;
+	},
+) {
 	const { protocol, host } = useRequestURL();
 
-	const ws = useWebSocket(`${protocol === 'https' ? 'wss' : 'ws'}://${host}/_ws`, {
-		// TMP
+	const ws = useWebSocket(`${protocol === 'https' ? 'wss' : 'ws'}://${host}/api/${url}`, {
+		// TMP uncomment later
 		// heartbeat: {
-		// 	message: 'ping',
-		// },
-		// TODO toast successfully reconnected if previously disconnected
-		onConnected: (ws) => {
-			console.log('connected', ws);
-		},
-		// TODO toast something wrong with connection
-		onError: (ws, ev) => {
-			console.log('errored', ws, ev);
-		},
-		// TODO probably custom reconnect instead of builtin one to show toast instantly on connection loss
-		// also can do it in increments, like 3, 5, 15
-		onDisconnected: (ws, ev) => {
-			console.log('disconnected', ws, ev);
-		},
-		// TODO globally provide adding callbacks for specific messages, handle reconnects, return callback to be called on unmount?
-		onMessage: (ws, ev) => {
-			console.log('got message', ws, ev);
+		// 	interval: 5000,
+		// 	pongTimeout: 5000
+		// }
+		onMessage(_ws, event) {
+			const data: Response = JSON.parse(event.data);
+			messageHandlers[data.type]?.(data.data);
 		},
 	});
 
-	return ws;
+	return {
+		send: ws.send,
+		// send: (data: Payload) => {
+		// 	ws.send(JSON.stringify(data));
+		// },
+		close: ws.close,
+	};
 };

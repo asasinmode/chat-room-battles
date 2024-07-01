@@ -5,11 +5,11 @@
 			<h2 class="mr-auto truncate text-5 font-600">
 				Party Animals
 			</h2>
-			<button title="menu" class="base-button-hoverable aspect-1 w-10 flex-center rounded-1/2 -mr-3">
+			<button title="menu" class="aspect-1 w-10 flex-center rounded-1/2 -mr-3 base-button-hoverable">
 				<span class="sr-only" aria-hidden="true">menu</span>
 				<div class="i-ph-list-bold size-7" />
 			</button>
-			<button title="information" class="base-button-hoverable aspect-1 w-10 flex-center rounded-1/2 -mr-2">
+			<button title="information" class="aspect-1 w-10 flex-center rounded-1/2 -mr-2 base-button-hoverable">
 				<span class="sr-only" aria-hidden="true">information</span>
 				<div class="i-ph-info-bold size-7" />
 			</button>

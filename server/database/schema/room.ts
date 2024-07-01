@@ -1,7 +1,8 @@
 import { randomUUID } from 'node:crypto';
+import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
-export const lobby = sqliteTable('lobby', {
+export const room = sqliteTable('room', {
 	id: text('id').primaryKey().$defaultFn(randomUUID),
 	name: text('name').notNull().$defaultFn(() => 'Party Animals'),
 	code: text('code').notNull().$defaultFn(generateCode),

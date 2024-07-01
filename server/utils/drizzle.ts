@@ -1,13 +1,13 @@
 import { drizzle } from 'drizzle-orm/d1';
 
 import { player } from '../database/schema/player';
-import { lobby } from '../database/schema/lobby';
+import { room } from '../database/schema/room';
 
 export { sql, eq, and, or } from 'drizzle-orm';
 
 export const tables = {
 	player,
-	lobby,
+	room,
 };
 
 export function useDrizzle() {
