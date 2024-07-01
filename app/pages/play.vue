@@ -12,17 +12,14 @@ const ws = useApiWebsocket<IRoomWSPayload, IRoomWSResponse>('_rooms', {
 	roomCreated(data) {
 		console.log('i got back', data);
 	},
-	tmp(data) {
-		console.log('tmp', data);
-	},
 });
 
 ws.send('');
 
-// if ('createLobby' in route.query) {
-// 	ws.send('createLobby');
+// if ('createRoom' in route.query) {
+// 	ws.send('createRoom');
 // } else if (route.query.join) {
-// 	ws.send(`joinLobby=${route.query.join}`);
+// 	ws.send(`joinRoom=${route.query.join}`);
 // }
 
 // router.replace({ query: {} });

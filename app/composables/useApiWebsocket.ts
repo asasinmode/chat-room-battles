@@ -14,15 +14,17 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 		// }
 		onMessage(_ws, event) {
 			const data: Response = JSON.parse(event.data);
+			// @ts-expect-error types work fine
 			messageHandlers[data.type]?.(data.data);
 		},
 	});
 
 	return {
-		send: ws.send,
-		// send: (data: Payload) => {
-		// 	ws.send(JSON.stringify(data));
-		// },
+		// TODO test server error handling
+		// send: ws.send,
+		send: (data: Payload) => {
+			ws.send(JSON.stringify(data));
+		},
 		close: ws.close,
 	};
 };
