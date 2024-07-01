@@ -6,8 +6,8 @@ export default defineTask({
 		name: 'db:migrate',
 		description: 'run database migrations',
 	},
-	async run({ payload, context }) {
-		consola.withTag('db').info('running migrations', payload, context);
+	async run() {
+		consola.withTag('db').info('running migrations');
 		try {
 			await migrate(useDrizzle(), { migrationsFolder: 'server/database/migrations' });
 			consola.withTag('db').success('migrations finished');
