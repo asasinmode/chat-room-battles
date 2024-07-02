@@ -22,8 +22,7 @@
 		"@unocss/nuxt": "^0.61.0",
 		"@unocss/reset": "^0.61.0",
 		"consola": "^3.2.3",
-		"drizzle-orm": "^0.31.2",
-		"nuxt": "^3.12.2"
+		"drizzle-orm": "^0.31.2"
 	},
 	"devDependencies": {
 		"@antfu/eslint-config": "^2.21.2",
@@ -36,6 +35,7 @@
 		"drizzle-kit": "^0.22.7",
 		"eslint": "^9.5.0",
 		"eslint-plugin-format": "^0.1.2",
+		"nuxt": "^3.12.3",
 		"typescript": "^5.5.2",
 		"vue-tsc": "^2.0.22",
 		"wrangler": "^3.62.0"
