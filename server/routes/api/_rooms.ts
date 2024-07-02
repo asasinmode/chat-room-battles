@@ -46,25 +46,23 @@ export default defineWebSocketHandler({
 });
 
 function handleMessage(data: IRoomWSPayload): IRoomWSResponse {
-	switch (data.type) {
-		case 'create':
-			return {
-				type: 'roomCreated',
-				data: {
-					code: 'CR3AT3D',
-				},
-			};
-		case 'join':
-			return {
-				type: 'roomCreated',
-				data: {
-					code: 'J01N3D',
-				},
-			};
-		default:
-			consola.withTag('room ws').warn('unknown message type received', data);
-			return data;
+	if (data.type === 'create') {
+		return {
+			type: 'roomCreated',
+			data: {
+				code: 'CR3AT3D',
+			},
+		};
+	} else if (data.type === 'join') {
+		return {
+			type: 'roomCreated',
+			data: {
+				code: 'J01N3D',
+			},
+		};
 	}
+	consola.withTag('room ws').warn('unknown message type received', data);
+	return data;
 }
 
 // export default defineEventHandler(async (event) => {
