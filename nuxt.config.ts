@@ -1,6 +1,7 @@
 import { version } from './package.json';
 
 export default defineNuxtConfig({
+	compatibilityDate: '2024-07-03',
 	future: { compatibilityVersion: 4 },
 	typescript: {
 		tsConfig: {
