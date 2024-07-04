@@ -6,7 +6,7 @@ const roomCodeToJoin = ref('');
 
 <template>
 	<section class="h-full flex flex-col overflow-x-hidden overflow-y-auto">
-		<NuxtLink to="/play?createLobby=" class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable">
+		<NuxtLink to="/play?createRoom=" class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable">
 			create room
 		</NuxtLink>
 
@@ -23,7 +23,7 @@ const roomCodeToJoin = ref('');
 					class="min-w-0 w-18 justify-self-center rounded-lg bg-zinc-2 px-1 py-1 text-center dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc"
 				>
 				<NuxtLink
-					:to="`/play?joinRoom=${roomCodeToJoin}`"
+					:to="`/play?join=${roomCodeToJoin}`"
 					class="ml-3 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5"
 				>
 					Join

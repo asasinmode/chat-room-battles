@@ -1,18 +1,22 @@
 import { randomUUID } from 'node:crypto';
 import consola from 'consola';
+import { getColor } from 'consola/utils';
 import type { Peer } from 'crossws';
+import { generateCode } from '~~/server/database/schema/room';
+import type { IRoomWSResponse, IServerRoom, IWSPayload } from '~~/types/room';
 
-import type { IRoomWSResponse, IWSPayload } from '~~/types/room';
+const rooms: IServerRoom[] = [];
+const roomConsola = consola.withTag('room ws');
 
 export default defineWebSocketHandler({
 	open(peer) {
 		console.log('[ws] open', peer, peer.id);
 	},
 
-	message(peer, message) {
+	async message(peer, message) {
 		const text = message.text();
 		if (!text) {
-			consola.withTag('room ws').warn('empty message received', message);
+			roomConsola.warn('empty message received', message);
 			return;
 		}
 
@@ -25,21 +29,54 @@ export default defineWebSocketHandler({
 		try {
 			data = JSON.parse(text);
 		} catch (e) {
-			consola.withTag('room ws').warn(`unparsable message received '${text}'`);
-			consola.withTag('room ws').error(e);
+			roomConsola.warn(`unparsable message received '${text}'`);
+			roomConsola.error(e);
 			return;
 		}
 
 		if (!data.type) {
-			consola.withTag('room ws').warn('message with no type received', data);
+			roomConsola.warn('message with no type received', data);
 			return;
 		}
 
-		peer.send(JSON.stringify(handleMessage(peer, data)));
+		peer.send(JSON.stringify(await handleMessage(peer, data)));
 	},
 
 	close(peer, event) {
 		console.log('[ws] close', peer, peer.id, event);
+
+		const room = rooms.find(room => room.connectedPlayers.some(p => p.wsId === peer.id));
+		if (!room) {
+			return;
+		}
+
+		const playerIndex = room.connectedPlayers.findIndex(p => p.wsId === peer.id);
+		if (playerIndex === -1) {
+			return;
+		}
+
+		const { fullName, id } = room.connectedPlayers[playerIndex];
+		const roomIdentifier = logIdentifiers(room.name, `${room.id}, ${room.code}`);
+
+		roomConsola.debug(`player ${logIdentifiers(fullName, id)} disconnected from room ${roomIdentifier}`);
+
+		room.connectedPlayers.splice(playerIndex, 1);
+		peer.publish(room.id, {
+			type: 'playerDisconnected',
+			data: {
+				playerCount: room.connectedPlayers.length,
+				id,
+			},
+		} satisfies IRoomWSResponse);
+
+		if (!room.connectedPlayers.length) {
+			roomConsola.debug(`no players left in ${roomIdentifier}, removing it in 10 seconds`);
+			room.removeTimeout = setTimeout(() => {
+				const roomIndex = rooms.findIndex(r => r.id === room.id);
+				~roomIndex && rooms.splice(roomIndex, 1);
+				roomConsola.debug(`removed room ${roomIdentifier}`);
+			}, 10000);
+		}
 	},
 
 	error(peer, error) {
@@ -47,47 +84,51 @@ export default defineWebSocketHandler({
 	},
 });
 
-interface IRoom {
-	id: string;
-	code: string;
-	connectedPlayers: {
-		id: string;
-		wsId: string;
-		fullName: string;
-	}[];
-}
+async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSResponse> {
+	if (payload.type === 'createRoom') {
+		const code = await createRoomCode();
 
-const rooms: IRoom[] = [];
+		if (!code) {
+			return {
+				type: 'error',
+				data: {
+					code: 'codeGenerationLimitReached',
+				},
+			};
+		}
 
-function handleMessage(peer: Peer, data: IWSPayload): IRoomWSResponse {
-	if (data.type === 'createRoom') {
-		const room: IRoom = {
+		const room: IServerRoom = {
 			id: randomUUID(),
-			code: 'CR3AT3D',
+			code,
+			name: 'Party Animals',
 			connectedPlayers: [{
 				id: randomUUID(),
 				wsId: peer.id,
 				fullName: 'Original Omar',
 			}],
 		};
-		rooms.push(room);
 
+		rooms.push(room);
 		peer.subscribe(room.id);
+
+		roomConsola.debug(`created room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
 
 		return {
 			type: 'roomCreated',
 			data: {
+				id: room.id,
 				code: 'CR3AT3D',
+				name: room.name,
 				playerCount: 1,
 			},
 		};
-	} else if (data.type === 'joinRoom') {
-		const room = rooms.find(room => room.code);
+	} else if (payload.type === 'joinRoom') {
+		const room = rooms.find(room => room.code === payload.data.code);
 		if (!room) {
 			return {
 				type: 'error',
 				data: {
-					type: 'roomNotFound',
+					code: 'roomNotFound',
 				},
 			};
 		}
@@ -105,10 +146,59 @@ function handleMessage(peer: Peer, data: IWSPayload): IRoomWSResponse {
 			type: 'playerJoined',
 			data: {
 				playerCount,
-				player: {
-					id: player.id,
-					fullName: player.fullName,
+				id: player.id,
+				fullName: player.fullName,
+			},
+		} satisfies IRoomWSResponse);
+		peer.subscribe(room.id);
+
+		roomConsola.debug(`player ${logIdentifiers(player.fullName, player.id)} joined room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
+
+		return {
+			type: 'roomCreated',
+			data: {
+				id: room.id,
+				code: room.code,
+				name: room.name,
+				playerCount,
+			},
+		};
+	} else if (payload.type === 'reconnectRoom') {
+		// TODO this and on close will have to be reworked once there are player accounts
+		const room = rooms.find(r => r.id === payload.data.id);
+		if (!room) {
+			return {
+				type: 'error',
+				data: {
+					code: 'roomNotFound',
 				},
+			};
+		}
+
+		const player = {
+			id: randomUUID(),
+			fullName: 'Reconnected Randy',
+			wsId: peer.id,
+		};
+
+		roomConsola.debug(`player ${logIdentifiers(player.fullName, player.id)} is reconnecting to room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
+
+		if (room.removeTimeout) {
+			roomConsola.debug(`stopping remove timeout of room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
+
+			clearTimeout(room.removeTimeout);
+			room.removeTimeout = undefined;
+		}
+
+		room.connectedPlayers.push(player);
+		const playerCount = room.connectedPlayers.length;
+
+		peer.publish(room.id, {
+			type: 'playerJoined',
+			data: {
+				playerCount,
+				id: player.id,
+				fullName: player.fullName,
 			},
 		} satisfies IRoomWSResponse);
 		peer.subscribe(room.id);
@@ -116,33 +206,23 @@ function handleMessage(peer: Peer, data: IWSPayload): IRoomWSResponse {
 		return {
 			type: 'roomCreated',
 			data: {
-				code: 'J01N3D',
+				id: room.id,
+				code: room.code,
+				name: room.name,
 				playerCount,
 			},
 		};
 	}
-	consola.withTag('room ws').warn('unknown message type received', data);
-	return data;
+	roomConsola.warn('unknown message type received', payload);
+	return payload;
+}
+
+function logIdentifiers(primary: string | number, secondary: string | number) {
+	return `${getColor('cyan')(primary)} ${getColor('gray')(`(${secondary})`)}`;
 }
 
 // export default defineEventHandler(async (event) => {
 // 	consola.withTag('room').debug('creating room');
-
-// 	let code = generateCode();
-// 	let generationCounter = 1;
-
-// 	while (roomWithCodeExists(code)) {
-// 		consola.withTag('room').debug(`duplicate code '${code}', iterations: ${generationCounter}`);
-
-// 		if (generationCounter > 10) {
-// 			consola.withTag('room').error(`code generation limit reached`);
-// 			setResponseStatus(event, 508);
-// 			return;
-// 		}
-
-// 		code = generateCode();
-// 		generationCounter += 1;
-// 	}
 
 // 	const [room] = await useDrizzle()
 // 		.insert(tables.room)
@@ -159,9 +239,32 @@ function handleMessage(peer: Peer, data: IWSPayload): IRoomWSResponse {
 // 	return room;
 // });
 
-// async function roomWithCodeExists(code: string): Promise<boolean> {
-// 	const { roomExists } = await useDrizzle().get<{ roomExists: number }>(
-// 		sql`SELECT EXISTS (SELECT 1 FROM ${tables.room} WHERE ${tables.room.code} = ${code}) as roomExists`,
-// 	);
-// 	return !!roomExists;
-// }
+async function createRoomCode(): Promise<string | undefined> {
+	let code = generateCode();
+	let generationCounter = 1;
+
+	while (roomWithCodeExists(code)) {
+		roomConsola.debug(`duplicate code generated ${getColor('cyan')(code)}, iterations: ${getColor('yellow')(generationCounter)}`);
+
+		if (generationCounter > 10) {
+			consola.withTag('room').error(`code generation limit reached`);
+			return;
+		}
+
+		code = generateCode();
+		generationCounter += 1;
+	}
+
+	// TMP
+
+	return code;
+}
+
+async function roomWithCodeExists(code: string): Promise<boolean> {
+	// TMP
+	return rooms.some(room => room.code === code);
+	// const { roomExists } = await useDrizzle().get<{ roomExists: number }>(
+	// 	sql`SELECT EXISTS (SELECT 1 FROM ${tables.room} WHERE ${tables.room.code} = ${code}) as roomExists`,
+	// );
+	// return !!roomExists;
+}

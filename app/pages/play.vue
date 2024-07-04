@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IRoomWSResponse, IWSPayload } from '~~/types/room';
+import type { IClientRoom, IRoomWSResponse, IWSPayload } from '~~/types/room';
 
 definePageMeta({ layout: 'game' });
 useSeoMeta({ title: 'Play' });
@@ -8,27 +8,46 @@ const { origin } = useRequestURL();
 const route = useRoute();
 // const router = useRouter();
 
+const isCodeInvalid = ref(false);
+const hasGameStarted = ref(false);
+
+const room = ref<IClientRoom>();
+
 const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 	roomCreated(data) {
-		console.log('i got back', data);
+		console.log('room created', room);
+		room.value = data;
 	},
 	playerJoined(data) {
+		if (!room.value) {
+			// TODO alert error somehow
+			console.error('player joined but room doesn\'t exist');
+			return;
+		}
+
 		console.log('player joined', data);
+		room.value.playerCount = data.playerCount;
+	},
+	playerDisconnected(data) {
+		if (!room.value) {
+			// TODO alert error somehow
+			console.error('player disconnected but room doesn\'t exist');
+			return;
+		}
+
+		console.log('player disconnected', data);
+		room.value.playerCount = data.playerCount;
 	},
 	error(data) {
 		console.log('oopsie error', data);
+		if (data.code === 'roomNotFound') {
+			isCodeInvalid.value = true;
+		}
 	},
 });
 
 if ('createRoom' in route.query) {
-	ws.send({
-		type: 'createRoom',
-		// TMP will be used in the future for sending player that creates room data
-		// and its easier than changing logic on backend to handle no data sent
-		data: {
-			playerId: Math.random().toString(36).slice(2),
-		},
-	});
+	ws.send({ type: 'createRoom' });
 } else if (route.query.join) {
 	ws.send({
 		type: 'joinRoom',
@@ -36,26 +55,26 @@ if ('createRoom' in route.query) {
 			code: route.query.join as string,
 		},
 	});
+} else {
+	navigateTo('/start', { replace: true });
 }
 
 // router.replace({ query: {} });
 
-const isWaitingForPlayers = ref(true);
-
 function copyRoomCodeLink() {
-	console.log('copying', `${origin}?join=<code-goes-here>`);
+	useClipboard().copy(`${origin}/play?join=${room.value?.code || ''}`);
 }
 </script>
 
 <template>
 	<main class="">
-		<div v-if="isWaitingForPlayers" class="flex flex-col items-center pb-4">
+		<div v-if="!hasGameStarted" class="flex flex-col items-center pb-4">
 			<h1 class="main-menu-link">
 				Room code
 			</h1>
 			<div class="flex flex-wrap justify-center gap-x-5 gap-y-2 px-2">
 				<span class="col-span-2 w-fit justify-self-center rounded-lg bg-zinc-2 px-2 py-1 dark:bg-zinc-8">
-					{{ 'A1B2C' }}
+					{{ room?.code }}
 				</span>
 				<button class="w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click="copyRoomCodeLink">
 					copy link
@@ -76,7 +95,7 @@ function copyRoomCodeLink() {
 					{{ letter }}
 				</span>
 				<span class="ml-1">
-					1 / 2
+					{{ room?.playerCount || 0 }} / 2
 				</span>
 			</p>
 		</div>

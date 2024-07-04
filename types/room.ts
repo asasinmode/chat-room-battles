@@ -1,8 +1,5 @@
 interface IPayloadCreateRoom {
 	type: 'createRoom';
-	data: {
-		playerId: string;
-	};
 }
 
 interface IPayloadJoinRoom {
@@ -12,34 +9,63 @@ interface IPayloadJoinRoom {
 	};
 }
 
-export type IWSPayload = IPayloadCreateRoom | IPayloadJoinRoom;
+interface IPayloadReconnectRoom {
+	type: 'reconnectRoom';
+	data: {
+		id: string;
+	};
+}
 
-export type IErrorCode = 'roomNotFound';
+export type IWSPayload = IPayloadCreateRoom | IPayloadJoinRoom | IPayloadReconnectRoom;
+
+export type IErrorCode = 'roomNotFound' | 'codeGenerationLimitReached';
 
 interface IResponseError {
 	type: 'error';
 	data: {
-		type: IErrorCode;
+		code: IErrorCode;
 	};
 }
 
 interface IResponseRoomCreated {
 	type: 'roomCreated';
-	data: {
-		code: string;
-		playerCount: number;
-	};
+	data: IClientRoom;
 }
 
 interface IResponsePlayerJoined {
 	type: 'playerJoined';
 	data: {
 		playerCount: number;
-		player: {
-			id: string;
-			fullName: string;
-		};
+		id: string;
+		fullName: string;
 	};
 }
 
-export type IRoomWSResponse = IResponseError | IResponseRoomCreated | IResponsePlayerJoined;
+interface IResponsePlayerDisconnected {
+	type: 'playerDisconnected';
+	data: {
+		playerCount: number;
+		id: string;
+	};
+}
+
+export type IRoomWSResponse = IResponseError | IResponseRoomCreated | IResponsePlayerJoined | IResponsePlayerDisconnected;
+
+export interface IRoom {
+	id: string;
+	code: string;
+	name: string;
+}
+
+export interface IServerRoom extends IRoom {
+	removeTimeout?: NodeJS.Timeout;
+	connectedPlayers: {
+		id: string;
+		wsId: string;
+		fullName: string;
+	}[];
+}
+
+export interface IClientRoom extends IRoom {
+	playerCount: number;
+}
