@@ -1,27 +1,22 @@
 <script setup lang="ts">
-const colorMode = useColorMode();
+import type VDialog from '~/components/V/VDialog.vue';
 
-const dialog = ref<HTMLDialogElement>();
+const colorMode = useColorMode();
+const dialog = ref<InstanceType<typeof VDialog>>();
 
 let initialValues = {
 	colorMode: colorMode.preference,
 };
 
 function openDialog() {
-	dialog.value?.showModal();
-
+	dialog.value?.open();
 	initialValues = {
 		colorMode: colorMode.preference,
 	};
 }
 
-function closeSettings() {
-	if (!dialog.value) {
-		console.warn('dialog closed without ref value');
-		return;
-	}
-
-	if (dialog.value.returnValue === 'cancel') {
+function closeSettings(isCancelled: boolean) {
+	if (isCancelled) {
 		colorMode.preference = initialValues.colorMode;
 	}
 }
@@ -32,10 +27,7 @@ defineExpose({
 </script>
 
 <template>
-	<dialog ref="dialog" class="w-xl px-4 py-3 shadow-lg" @close="closeSettings">
-		<h1 class="mb-4 text-center text-6 font-700">
-			Settings
-		</h1>
+	<VDialog ref="dialog" title="Settings" @close="closeSettings">
 		<form class="grid grid-cols-2 gap-x-4 gap-y-2">
 			<fieldset class="col-span-full">
 				<legend>Color mode</legend>
@@ -50,5 +42,5 @@ defineExpose({
 				save
 			</button>
 		</form>
-	</dialog>
+	</VDialog>
 </template>
