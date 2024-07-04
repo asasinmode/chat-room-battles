@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { IRoomWSPayload, IRoomWSResponse } from '~~/types/room';
+import type { IRoomWSResponse, IWSPayload } from '~~/types/room';
 
 definePageMeta({ layout: 'game' });
 useSeoMeta({ title: 'Play' });
@@ -8,19 +8,35 @@ const { origin } = useRequestURL();
 const route = useRoute();
 // const router = useRouter();
 
-const ws = useApiWebsocket<IRoomWSPayload, IRoomWSResponse>('_rooms', {
+const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 	roomCreated(data) {
 		console.log('i got back', data);
 	},
+	playerJoined(data) {
+		console.log('player joined', data);
+	},
+	error(data) {
+		console.log('oopsie error', data);
+	},
 });
 
-ws.send('');
-
-// if ('createRoom' in route.query) {
-// 	ws.send('createRoom');
-// } else if (route.query.join) {
-// 	ws.send(`joinRoom=${route.query.join}`);
-// }
+if ('createRoom' in route.query) {
+	ws.send({
+		type: 'createRoom',
+		// TMP will be used in the future for sending player that creates room data
+		// and its easier than changing logic on backend to handle no data sent
+		data: {
+			playerId: Math.random().toString(36).slice(2),
+		},
+	});
+} else if (route.query.join) {
+	ws.send({
+		type: 'joinRoom',
+		data: {
+			code: route.query.join as string,
+		},
+	});
+}
 
 // router.replace({ query: {} });
 
@@ -64,6 +80,15 @@ function copyRoomCodeLink() {
 				</span>
 			</p>
 		</div>
+		<button @click="ws.close()">
+			close
+		</button>
+		<button @click="ws.open()">
+			open
+		</button>
+		<button @click="ws.send('')">
+			test
+		</button>
 	</main>
 </template>
 

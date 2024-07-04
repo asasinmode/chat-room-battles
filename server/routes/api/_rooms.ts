@@ -1,10 +1,12 @@
+import { randomUUID } from 'node:crypto';
 import consola from 'consola';
+import type { Peer } from 'crossws';
 
-import type { IRoomWSPayload, IRoomWSResponse } from '~~/types/room';
+import type { IRoomWSResponse, IWSPayload } from '~~/types/room';
 
 export default defineWebSocketHandler({
 	open(peer) {
-		console.log('[ws] open', peer);
+		console.log('[ws] open', peer, peer.id);
 	},
 
 	message(peer, message) {
@@ -19,7 +21,7 @@ export default defineWebSocketHandler({
 			return;
 		}
 
-		let data: IRoomWSPayload;
+		let data: IWSPayload;
 		try {
 			data = JSON.parse(text);
 		} catch (e) {
@@ -33,11 +35,11 @@ export default defineWebSocketHandler({
 			return;
 		}
 
-		peer.send(JSON.stringify(handleMessage(data)));
+		peer.send(JSON.stringify(handleMessage(peer, data)));
 	},
 
 	close(peer, event) {
-		console.log('[ws] close', peer, event);
+		console.log('[ws] close', peer, peer.id, event);
 	},
 
 	error(peer, error) {
@@ -45,19 +47,77 @@ export default defineWebSocketHandler({
 	},
 });
 
-function handleMessage(data: IRoomWSPayload): IRoomWSResponse {
-	if (data.type === 'create') {
+interface IRoom {
+	id: string;
+	code: string;
+	connectedPlayers: {
+		id: string;
+		wsId: string;
+		fullName: string;
+	}[];
+}
+
+const rooms: IRoom[] = [];
+
+function handleMessage(peer: Peer, data: IWSPayload): IRoomWSResponse {
+	if (data.type === 'createRoom') {
+		const room: IRoom = {
+			id: randomUUID(),
+			code: 'CR3AT3D',
+			connectedPlayers: [{
+				id: randomUUID(),
+				wsId: peer.id,
+				fullName: 'Original Omar',
+			}],
+		};
+		rooms.push(room);
+
+		peer.subscribe(room.id);
+
 		return {
 			type: 'roomCreated',
 			data: {
 				code: 'CR3AT3D',
+				playerCount: 1,
 			},
 		};
-	} else if (data.type === 'join') {
+	} else if (data.type === 'joinRoom') {
+		const room = rooms.find(room => room.code);
+		if (!room) {
+			return {
+				type: 'error',
+				data: {
+					type: 'roomNotFound',
+				},
+			};
+		}
+
+		const player = {
+			id: randomUUID(),
+			wsId: peer.id,
+			fullName: 'Caring Cassidy',
+		};
+		room.connectedPlayers.push(player);
+
+		const playerCount = room.connectedPlayers.length;
+
+		peer.publish(room.id, {
+			type: 'playerJoined',
+			data: {
+				playerCount,
+				player: {
+					id: player.id,
+					fullName: player.fullName,
+				},
+			},
+		} satisfies IRoomWSResponse);
+		peer.subscribe(room.id);
+
 		return {
 			type: 'roomCreated',
 			data: {
 				code: 'J01N3D',
+				playerCount,
 			},
 		};
 	}

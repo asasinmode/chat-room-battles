@@ -26,5 +26,6 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 			ws.send(JSON.stringify(data));
 		},
 		close: ws.close,
+		open: ws.open,
 	};
 };
