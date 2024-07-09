@@ -67,8 +67,16 @@ if ('createRoom' in route.query) {
 
 // router.replace({ query: {} });
 
+const copyTooltip = ref<HTMLDialogElement>();
+
 function copyRoomCodeLink() {
 	useClipboard().copy(`${origin}/play?join=${room.value?.code || ''}`);
+	copyTooltip.value?.show();
+	document.addEventListener('click', (event) => {
+		if (event.target !== copyTooltip.value) {
+			copyTooltip.value?.close();
+		}
+	}, { once: true });
 }
 </script>
 
@@ -82,9 +90,14 @@ function copyRoomCodeLink() {
 				<span class="col-span-2 w-fit justify-self-center rounded-lg bg-zinc-2 px-2 py-1 dark:bg-zinc-8">
 					{{ room?.code }}
 				</span>
-				<button class="w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click="copyRoomCodeLink">
-					copy link
-				</button>
+				<div class="relative">
+					<button class="relative w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click.stop="copyRoomCodeLink">
+						copy link
+					</button>
+					<dialog ref="copyTooltip" class="rounded-md px-2 py-1 text-3 -top-1 -translate-y-full">
+						Copied!
+					</dialog>
+				</div>
 			</div>
 			<p class="col-span-full mt-4 max-w-sm px-2 text-center leading-snug">
 				Send it to your friend! <br>
