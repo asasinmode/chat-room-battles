@@ -72,11 +72,6 @@ const copyTooltip = ref<HTMLDialogElement>();
 function copyRoomCodeLink() {
 	useClipboard().copy(`${origin}/play?join=${room.value?.code || ''}`);
 	copyTooltip.value?.show();
-	document.addEventListener('click', (event) => {
-		if (event.target !== copyTooltip.value) {
-			copyTooltip.value?.close();
-		}
-	}, { once: true });
 }
 </script>
 
@@ -94,7 +89,12 @@ function copyRoomCodeLink() {
 					<button class="relative w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click.stop="copyRoomCodeLink">
 						copy link
 					</button>
-					<dialog ref="copyTooltip" class="rounded-md px-2 py-1 text-3 -top-1 -translate-y-full">
+					<dialog
+						ref="copyTooltip"
+						class="rounded-md px-2 py-1 text-3 -top-1 -translate-y-full"
+						@focusout="copyTooltip?.close()"
+						@keydown.esc="copyTooltip?.close()"
+					>
 						Copied!
 					</dialog>
 				</div>
@@ -120,9 +120,6 @@ function copyRoomCodeLink() {
 				</span>
 			</p>
 		</div>
-		<button @click="ws.close()">
-			close
-		</button>
 	</main>
 </template>
 
