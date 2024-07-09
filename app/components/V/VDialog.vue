@@ -1,6 +1,7 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
 	title: string;
+	id: string;
 }>();
 
 const emit = defineEmits<{
@@ -18,8 +19,10 @@ function closeDialog() {
 	}
 }
 
+const id = computed(() => `${props.id}DialogTitle`);
+
 defineExpose({
-	open() {
+	showModal() {
 		dialog.value?.showModal();
 	},
 	close(returnValue?: 'save' | 'cancel') {
@@ -29,8 +32,8 @@ defineExpose({
 </script>
 
 <template>
-	<dialog ref="dialog" class="w-xl px-4 py-3 shadow-lg" @close="closeDialog">
-		<h1 class="mb-4 text-center text-6 font-700">
+	<dialog ref="dialog" class="w-xl px-4 py-3 shadow-lg" :aria-labelledby="id" @close="closeDialog">
+		<h1 :id="id" class="mb-4 text-center text-6 font-700">
 			{{ title }}
 		</h1>
 		<slot />

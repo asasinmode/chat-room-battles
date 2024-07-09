@@ -9,7 +9,7 @@
 	"scripts": {
 		"dev": "nuxt dev",
 		"build": "nuxt build",
-		"preview": "nuxt preview",
+		"preview": "wrangler pages dev dist/",
 		"deploy": "nuxthub deploy",
 		"postinstall": "nuxt prepare",
 		"lint": "eslint .",

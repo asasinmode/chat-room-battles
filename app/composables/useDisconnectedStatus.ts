@@ -3,7 +3,7 @@ import VDialog from '~/components/V/VDialog.vue';
 
 type IVDialog = InstanceType<typeof VDialog>;
 
-let open: IVDialog['open'] | undefined;
+let showModal: IVDialog['showModal'] | undefined;
 let close: IVDialog['close'] | undefined;
 
 const reconnectingText = [
@@ -26,7 +26,7 @@ const TheDisconnectedStatus = defineComponent(() => {
 
 	onMounted(() => {
 		if (dialog.value) {
-			open = dialog.value.open;
+			showModal = dialog.value.showModal;
 			close = dialog.value.close;
 		}
 	});
@@ -36,6 +36,7 @@ const TheDisconnectedStatus = defineComponent(() => {
 			VDialog,
 			{
 				ref: dialog,
+				id: 'disconnectedStatus',
 				title: 'Disconnected',
 				onKeydown: (event: KeyboardEvent) => {
 					event.code === 'Escape' && event.preventDefault();
@@ -43,7 +44,7 @@ const TheDisconnectedStatus = defineComponent(() => {
 			},
 			{
 				default: () => [
-					h('p', { class: 'text-center text-zinc-5 dark:text-zinc' }, reconnectingText),
+					h('p', { class: 'text-center' }, reconnectingText),
 				],
 			},
 		);
@@ -52,7 +53,7 @@ const TheDisconnectedStatus = defineComponent(() => {
 export function useDisconnectedStatus() {
 	return {
 		TheDisconnectedStatus,
-		showStatus: () => open?.(),
+		showStatus: () => showModal?.(),
 		closeStatus: () => close?.(),
 	};
 }
