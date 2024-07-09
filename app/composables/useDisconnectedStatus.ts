@@ -6,17 +6,20 @@ type IVDialog = InstanceType<typeof VDialog>;
 let open: IVDialog['open'] | undefined;
 let close: IVDialog['close'] | undefined;
 
-const reconnectingText = 'Attemping to reconnect...'.split('').map((letter, index) => {
-	const classes = ['wavy-letter-disconnected inline-block'];
+const reconnectingText = [
+	h('span', { class: 'sr-only' }, 'Attempting to reconnect...'),
+	...'Attemping to reconnect...'.split('').map((letter, index) => {
+		const classes = ['wavy-letter-disconnected inline-block'];
 
-	if (letter === ' ') {
-		classes.push('w-1');
-	} else if (letter === '.') {
-		classes.push('wavy-dot');
-	}
+		if (letter === ' ') {
+			classes.push('w-1');
+		} else if (letter === '.') {
+			classes.push('wavy-dot');
+		}
 
-	return h('span', { key: index, class: classes, style: `--wave-index: ${index}` }, letter);
-});
+		return h('span', { 'key': index, 'class': classes, 'style': `--wave-index: ${index}`, 'aria-hidden': true }, letter);
+	}),
+];
 
 const TheDisconnectedStatus = defineComponent(() => {
 	const dialog = ref<IVDialog>();

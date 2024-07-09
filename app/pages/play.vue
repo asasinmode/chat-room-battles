@@ -104,12 +104,14 @@ function copyRoomCodeLink() {
 				They should paste the whole link into their browser or paste the code into the <b>Join room</b> input.
 			</p>
 			<p class="mt-2 text-zinc-5 tracking-tight dark:text-zinc" style="--wave-duration: 1.5s">
+				<span class="sr-only">Waiting for players...</span>
 				<span
 					v-for="(letter, index) of 'Waiting for players...'.split('')"
 					:key="index"
-					class="wavy-letter-waiting-for-players inline-block"
 					:class="letter === ' ' ? 'w-1' : letter === '.' ? 'wavy-dot' : ''"
 					:style="`--wave-index: ${index}`"
+					class="wavy-letter-waiting-for-players inline-block"
+					aria-hidden="true"
 				>
 					{{ letter }}
 				</span>
@@ -118,6 +120,9 @@ function copyRoomCodeLink() {
 				</span>
 			</p>
 		</div>
+		<button @click="ws.close()">
+			close
+		</button>
 	</main>
 </template>
 
