@@ -6,7 +6,6 @@ useSeoMeta({ title: 'Play' });
 
 const { origin } = useRequestURL();
 const route = useRoute();
-const { showStatus } = useDisconnectedStatus();
 // const router = useRouter();
 
 const isCodeInvalid = ref(false);
@@ -32,7 +31,7 @@ const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 	playerDisconnected(data) {
 		if (!room.value) {
 			// TODO alert error somehow
-			console.error('player disconnected but room doesn\'t exist');
+			console.error('disconnected with no room set');
 			return;
 		}
 
@@ -45,6 +44,12 @@ const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 			isCodeInvalid.value = true;
 		}
 	},
+}, () => {
+	if (!room.value) {
+		console.error('reconnected with no room set');
+		return;
+	}
+	ws.send({ type: 'reconnectRoom', data: { id: room.value.id } });
 });
 
 if ('createRoom' in route.query) {
@@ -85,7 +90,7 @@ function copyRoomCodeLink() {
 				Send it to your friend! <br>
 				They should paste the whole link into their browser or paste the code into the <b>Join room</b> input.
 			</p>
-			<p v-once class="mt-2 text-zinc-5 tracking-tight dark:text-zinc" style="--wave-duration: 1.5s">
+			<p class="mt-2 text-zinc-5 tracking-tight dark:text-zinc" style="--wave-duration: 1.5s">
 				<span
 					v-for="(letter, index) of 'Waiting for players...'.split('')"
 					:key="index"
@@ -96,19 +101,10 @@ function copyRoomCodeLink() {
 					{{ letter }}
 				</span>
 				<span class="ml-1">
-					{{ room?.playerCount || 0 }} / 2
+					{{ room?.playerCount ?? 0 }} / 2
 				</span>
 			</p>
 		</div>
-		<button @click="ws.close()">
-			close
-		</button>
-		<button @click="ws.open()">
-			open
-		</button>
-		<button @click="showStatus()">
-			show status
-		</button>
 	</main>
 </template>
 

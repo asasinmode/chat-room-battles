@@ -45,8 +45,6 @@ export default defineWebSocketHandler({
 	close(peer, event) {
 		console.log('[ws] close', peer, peer.id, event);
 
-		console.log('rooms', rooms);
-
 		const room = rooms.find(room => room.connectedPlayers.some(p => p.wsId === peer.id));
 		if (!room) {
 			return;

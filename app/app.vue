@@ -19,7 +19,7 @@ const { TheDisconnectedStatus } = useDisconnectedStatus();
 
 <style>
 .wavy-letter-disconnected {
-	animation: letter-bounce-disconnected 2s ease-in-out
+	animation: letter-bounce-disconnected 1.9s ease-in-out
 		calc(var(--wave-index) * 40ms) infinite;
 }
 

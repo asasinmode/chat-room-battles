@@ -3,8 +3,12 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 	messageHandlers: {
 		[K in Response['type']]: (data: Extract<Response, { type: K }>['data']) => void;
 	},
+	reconnectCallback: () => void,
 ) {
 	const { protocol, host } = useRequestURL();
+	const { showStatus, closeStatus } = useDisconnectedStatus();
+
+	let hasDisconnected = false;
 
 	const ws = useWebSocket(`${protocol === 'https' ? 'wss' : 'ws'}://${host}/api/${url}`, {
 		// TMP uncomment later
@@ -17,10 +21,29 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 			// @ts-expect-error types work fine
 			messageHandlers[data.type]?.(data.data);
 		},
+
+		// TODO handle disconnecting and errors showing
+		onDisconnected(_ws, event) {
+			if (event.code === 1000) {
+				return;
+			}
+			console.error('websockets closed with error');
+			console.error(event);
+			hasDisconnected = true;
+			showStatus();
+		},
+
+		onConnected(_ws) {
+			if (hasDisconnected) {
+				hasDisconnected = false;
+				closeStatus();
+				reconnectCallback();
+			}
+		},
 	});
 
 	return {
-		send: (data: Payload) => {
+		send(data: Payload) {
 			ws.send(JSON.stringify(data));
 		},
 		close: ws.close,

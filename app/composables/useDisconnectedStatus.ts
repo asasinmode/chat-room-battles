@@ -50,6 +50,6 @@ export function useDisconnectedStatus() {
 	return {
 		TheDisconnectedStatus,
 		showStatus: () => open?.(),
-		closeStatus: close,
+		closeStatus: () => close?.(),
 	};
 }
