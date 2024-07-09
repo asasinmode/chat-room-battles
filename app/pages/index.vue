@@ -9,10 +9,10 @@ const settings = ref<InstanceType<typeof TheSettings>>();
 <template>
 	<div class="h-full flex flex-col">
 		<nav class="flex flex-col">
-			<NuxtLink to="/start" class="main-menu-link base-button-hoverable b-(b-2 black) dark:b-white">
+			<NuxtLink to="/start" class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable">
 				play
 			</NuxtLink>
-			<button class="main-menu-link base-button-hoverable b-(b-2 black) dark:b-white" @click="settings?.openDialog()">
+			<button class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable" @click="settings?.openDialog()">
 				settings
 			</button>
 			<TheSettings ref="settings" />

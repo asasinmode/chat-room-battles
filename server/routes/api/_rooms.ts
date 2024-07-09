@@ -35,7 +35,7 @@ export default defineWebSocketHandler({
 		}
 
 		if (!data.type) {
-			roomConsola.warn('message with no type received', data);
+			roomConsola.warn(`message with no type received '${data}'`);
 			return;
 		}
 
@@ -44,6 +44,8 @@ export default defineWebSocketHandler({
 
 	close(peer, event) {
 		console.log('[ws] close', peer, peer.id, event);
+
+		console.log('rooms', rooms);
 
 		const room = rooms.find(room => room.connectedPlayers.some(p => p.wsId === peer.id));
 		if (!room) {
@@ -117,7 +119,7 @@ async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSRe
 			type: 'roomCreated',
 			data: {
 				id: room.id,
-				code: 'CR3AT3D',
+				code: room.code,
 				name: room.name,
 				playerCount: 1,
 			},
@@ -243,7 +245,7 @@ async function createRoomCode(): Promise<string | undefined> {
 	let code = generateCode();
 	let generationCounter = 1;
 
-	while (roomWithCodeExists(code)) {
+	while (await roomWithCodeExists(code)) {
 		roomConsola.debug(`duplicate code generated ${getColor('cyan')(code)}, iterations: ${getColor('yellow')(generationCounter)}`);
 
 		if (generationCounter > 10) {
@@ -255,14 +257,12 @@ async function createRoomCode(): Promise<string | undefined> {
 		generationCounter += 1;
 	}
 
-	// TMP
-
 	return code;
 }
 
 async function roomWithCodeExists(code: string): Promise<boolean> {
 	// TMP
-	return rooms.some(room => room.code === code);
+	return rooms.some(r => r.code === code);
 	// const { roomExists } = await useDrizzle().get<{ roomExists: number }>(
 	// 	sql`SELECT EXISTS (SELECT 1 FROM ${tables.room} WHERE ${tables.room.code} = ${code}) as roomExists`,
 	// );

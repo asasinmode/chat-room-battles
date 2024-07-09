@@ -6,6 +6,7 @@ useSeoMeta({ title: 'Play' });
 
 const { origin } = useRequestURL();
 const route = useRoute();
+const { showStatus } = useDisconnectedStatus();
 // const router = useRouter();
 
 const isCodeInvalid = ref(false);
@@ -15,7 +16,7 @@ const room = ref<IClientRoom>();
 
 const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 	roomCreated(data) {
-		console.log('room created', room);
+		console.log('room created', data);
 		room.value = data;
 	},
 	playerJoined(data) {
@@ -105,8 +106,8 @@ function copyRoomCodeLink() {
 		<button @click="ws.open()">
 			open
 		</button>
-		<button @click="ws.send('')">
-			test
+		<button @click="showStatus()">
+			show status
 		</button>
 	</main>
 </template>

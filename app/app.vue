@@ -6,10 +6,50 @@ useSeoMeta({
 		none: true,
 	},
 });
+
+const { TheDisconnectedStatus } = useDisconnectedStatus();
 </script>
 
 <template>
 	<NuxtLayout>
 		<NuxtPage />
 	</NuxtLayout>
+	<TheDisconnectedStatus />
 </template>
+
+<style>
+.wavy-letter-disconnected {
+	animation: letter-bounce-disconnected 2s ease-in-out
+		calc(var(--wave-index) * 40ms) infinite;
+}
+
+@keyframes letter-bounce-disconnected {
+	0% {
+		translate: 0 0;
+	}
+
+	12.5% {
+		translate: 0 -15%;
+	}
+
+	25% {
+		translate: 0 0;
+	}
+}
+
+@media (prefers-reduced-motion) {
+	.wavy-letter-disconnected {
+		animation: none;
+	}
+
+	.wavy-dot {
+		animation: reduced-motion-wavy-dot 1.2s step-start infinite !important;
+	}
+
+	@keyframes reduced-motion-wavy-dot {
+		50% {
+			opacity: 0;
+		}
+	}
+}
+</style>

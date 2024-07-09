@@ -20,8 +20,6 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 	});
 
 	return {
-		// TODO test server error handling
-		// send: ws.send,
 		send: (data: Payload) => {
 			ws.send(JSON.stringify(data));
 		},
