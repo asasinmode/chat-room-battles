@@ -221,24 +221,6 @@ function logIdentifiers(primary: string | number, secondary: string | number) {
 	return `${getColor('cyan')(primary)} ${getColor('gray')(`(${secondary})`)}`;
 }
 
-// export default defineEventHandler(async (event) => {
-// 	consola.withTag('room').debug('creating room');
-
-// 	const [room] = await useDrizzle()
-// 		.insert(tables.room)
-// 		.values({ code })
-// 		.returning({
-// 			id: tables.room.id,
-// 			code: tables.room.code,
-// 		});
-
-// 	console.log('room', room);
-
-// 	consola.withTag('room').debug(`generated room code after ${generationCounter} tries`);
-
-// 	return room;
-// });
-
 async function createRoomCode(): Promise<string | undefined> {
 	let code = generateCode();
 	let generationCounter = 1;

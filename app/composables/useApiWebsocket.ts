@@ -4,6 +4,7 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 		[K in Response['type']]: (data: Extract<Response, { type: K }>['data']) => void;
 	},
 	reconnectCallback: () => void,
+	connectCallback?: () => void,
 ) {
 	const { protocol, host } = useRequestURL();
 	const { showStatus, closeStatus } = useDisconnectedStatus();
@@ -11,6 +12,7 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 	let hasDisconnected = false;
 
 	const ws = useWebSocket(`${protocol === 'https' ? 'wss' : 'ws'}://${host}/api/${url}`, {
+		immediate: false,
 		// TMP uncomment later
 		// heartbeat: {
 		// 	interval: 5000,
@@ -38,6 +40,8 @@ export function useApiWebsocket<Payload, Response extends { type: string; data: 
 				hasDisconnected = false;
 				closeStatus();
 				reconnectCallback();
+			} else {
+				connectCallback?.();
 			}
 		},
 	});

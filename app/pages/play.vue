@@ -9,7 +9,8 @@ const route = useRoute();
 // const router = useRouter();
 
 const isCodeInvalid = ref(false);
-const hasGameStarted = ref(false);
+const isGameStarted = ref(false);
+const isConnected = ref(false);
 
 const room = ref<IClientRoom>();
 
@@ -39,10 +40,12 @@ const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 		room.value.playerCount = data.playerCount;
 	},
 	error(data) {
-		console.log('oopsie error', data);
 		if (data.code === 'roomNotFound') {
 			isCodeInvalid.value = true;
+			ws.close();
+			return;
 		}
+		console.log('oopsie error', data);
 	},
 }, () => {
 	if (!room.value) {
@@ -50,6 +53,8 @@ const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 		return;
 	}
 	ws.send({ type: 'reconnectRoom', data: { id: room.value.id } });
+}, () => {
+	console.log('connected :)');
 });
 
 if ('createRoom' in route.query) {
@@ -77,7 +82,7 @@ function copyRoomCodeLink() {
 
 <template>
 	<main class="">
-		<div v-if="!hasGameStarted" class="flex flex-col items-center pb-4">
+		<div v-if="!isGameStarted" class="flex flex-col items-center pb-4">
 			<h1 class="main-menu-link">
 				Room code
 			</h1>
@@ -120,6 +125,9 @@ function copyRoomCodeLink() {
 				</span>
 			</p>
 		</div>
+		<button @click="ws.open()">
+			connect on create room click; same with join? then move query to start page
+		</button>
 	</main>
 </template>
 
