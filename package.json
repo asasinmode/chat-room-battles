@@ -39,6 +39,6 @@
 		"nuxt": "^3.12.3",
 		"typescript": "^5.5.3",
 		"vue-tsc": "^2.0.26",
-		"wrangler": "^3.63.2"
+		"wrangler": "^3.64.0"
 	}
 }
