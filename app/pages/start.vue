@@ -1,14 +1,45 @@
 <script setup lang="ts">
 useSeoMeta({ title: 'Start game' });
 
-const roomCodeToJoin = ref('');
+const isCreatingRoom = ref(false);
+
+async function createRoom() {
+	console.log('creating room');
+	isCreatingRoom.value = true;
+	try {
+		const room = await $fetch('/api/rooms', { method: 'post' });
+		console.log('created', room);
+	} catch (e) {
+		console.error(e);
+		throw new VError('Creating room failed');
+	} finally {
+		isCreatingRoom.value = false;
+	}
+}
+
+const roomCode = ref('');
+const isJoiningRoom = ref(false);
+
+async function joinRoom() {
+	console.log('joining room');
+	isJoiningRoom.value = true;
+	try {
+		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
+		console.log('joined', room);
+	} catch (e) {
+		console.error(e);
+		throw new VError('Joining room failed');
+	} finally {
+		isJoiningRoom.value = false;
+	}
+}
 </script>
 
 <template>
 	<section class="h-full flex flex-col overflow-x-hidden overflow-y-auto">
-		<NuxtLink to="/play?createRoom=" class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable">
+		<button class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable" @click="createRoom">
 			create room
-		</NuxtLink>
+		</button>
 
 		<div class="flex flex-col items-center b-(b-2 black) pb-4 dark:b-white">
 			<h3 class="col-span-full main-menu-link">
@@ -18,16 +49,16 @@ const roomCodeToJoin = ref('');
 				<label for="roomCode" class="h-fit">Code or link:</label>
 				<input
 					id="roomCode"
-					v-model="roomCodeToJoin"
-					placeholder="123456"
+					v-model="roomCode"
+					placeholder="1A2B3"
 					class="min-w-0 w-18 justify-self-center rounded-lg bg-zinc-2 px-1 py-1 text-center dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc"
 				>
-				<NuxtLink
-					:to="`/play?join=${roomCodeToJoin}`"
+				<button
 					class="ml-3 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5"
+					@click="joinRoom"
 				>
 					Join
-				</NuxtLink>
+				</button>
 			</div>
 		</div>
 

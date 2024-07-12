@@ -1,12 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import consola from 'consola';
-import { getColor } from 'consola/utils';
 import type { Peer } from 'crossws';
-import { generateCode } from '~~/server/database/schema/room';
 import type { IRoomWSResponse, IServerRoom, IWSPayload } from '~~/types/room';
-
-const rooms: IServerRoom[] = [];
-const roomConsola = consola.withTag('room ws');
 
 export default defineWebSocketHandler({
 	open(peer) {
@@ -16,7 +10,7 @@ export default defineWebSocketHandler({
 	async message(peer, message) {
 		const text = message.text();
 		if (!text) {
-			roomConsola.warn('empty message received', message);
+			roomLogger.warn('empty message received', message);
 			return;
 		}
 
@@ -29,13 +23,13 @@ export default defineWebSocketHandler({
 		try {
 			data = JSON.parse(text);
 		} catch (e) {
-			roomConsola.warn(`unparsable message received '${text}'`);
-			roomConsola.error(e);
+			roomLogger.warn(`unparsable message received '${text}'`);
+			roomLogger.error(e);
 			return;
 		}
 
 		if (!data.type) {
-			roomConsola.warn(`message with no type received '${data}'`);
+			roomLogger.warn(`message with no type received '${data}'`);
 			return;
 		}
 
@@ -58,7 +52,7 @@ export default defineWebSocketHandler({
 		const { fullName, id } = room.connectedPlayers[playerIndex];
 		const roomIdentifier = logIdentifiers(room.name, `${room.id}, ${room.code}`);
 
-		roomConsola.debug(`player ${logIdentifiers(fullName, id)} disconnected from room ${roomIdentifier}`);
+		roomLogger.debug(`player ${logIdentifiers(fullName, id)} disconnected from room ${roomIdentifier}`);
 
 		room.connectedPlayers.splice(playerIndex, 1);
 		peer.publish(room.id, {
@@ -70,11 +64,11 @@ export default defineWebSocketHandler({
 		} satisfies IRoomWSResponse);
 
 		if (!room.connectedPlayers.length) {
-			roomConsola.debug(`no players left in ${roomIdentifier}, removing it in 10 seconds`);
+			roomLogger.debug(`no players left in ${roomIdentifier}, removing it in 10 seconds`);
 			room.removeTimeout = setTimeout(() => {
 				const roomIndex = rooms.findIndex(r => r.id === room.id);
 				~roomIndex && rooms.splice(roomIndex, 1);
-				roomConsola.debug(`removed room ${roomIdentifier}`);
+				roomLogger.debug(`removed room ${roomIdentifier}`);
 			}, 10000);
 		}
 	},
@@ -111,7 +105,7 @@ async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSRe
 		rooms.push(room);
 		peer.subscribe(room.id);
 
-		roomConsola.debug(`created room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
+		roomLogger.debug(`created room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
 
 		return {
 			type: 'roomCreated',
@@ -152,7 +146,7 @@ async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSRe
 		} satisfies IRoomWSResponse);
 		peer.subscribe(room.id);
 
-		roomConsola.debug(`player ${logIdentifiers(player.fullName, player.id)} joined room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
+		roomLogger.debug(`player ${logIdentifiers(player.fullName, player.id)} joined room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
 
 		return {
 			type: 'roomCreated',
@@ -181,10 +175,10 @@ async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSRe
 			wsId: peer.id,
 		};
 
-		roomConsola.debug(`player ${logIdentifiers(player.fullName, player.id)} is reconnecting to room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
+		roomLogger.debug(`player ${logIdentifiers(player.fullName, player.id)} is reconnecting to room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
 
 		if (room.removeTimeout) {
-			roomConsola.debug(`stopping remove timeout of room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
+			roomLogger.debug(`stopping remove timeout of room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
 
 			clearTimeout(room.removeTimeout);
 			room.removeTimeout = undefined;
@@ -213,38 +207,6 @@ async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSRe
 			},
 		};
 	}
-	roomConsola.warn('unknown message type received', payload);
+	roomLogger.warn('unknown message type received', payload);
 	return payload;
-}
-
-function logIdentifiers(primary: string | number, secondary: string | number) {
-	return `${getColor('cyan')(primary)} ${getColor('gray')(`(${secondary})`)}`;
-}
-
-async function createRoomCode(): Promise<string | undefined> {
-	let code = generateCode();
-	let generationCounter = 1;
-
-	while (await roomWithCodeExists(code)) {
-		roomConsola.debug(`duplicate code generated ${getColor('cyan')(code)}, iterations: ${getColor('yellow')(generationCounter)}`);
-
-		if (generationCounter > 10) {
-			consola.withTag('room').error(`code generation limit reached`);
-			return;
-		}
-
-		code = generateCode();
-		generationCounter += 1;
-	}
-
-	return code;
-}
-
-async function roomWithCodeExists(code: string): Promise<boolean> {
-	// TMP
-	return rooms.some(r => r.code === code);
-	// const { roomExists } = await useDrizzle().get<{ roomExists: number }>(
-	// 	sql`SELECT EXISTS (SELECT 1 FROM ${tables.room} WHERE ${tables.room.code} = ${code}) as roomExists`,
-	// );
-	// return !!roomExists;
 }

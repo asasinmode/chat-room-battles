@@ -13,12 +13,8 @@ export default withNuxt(
 			'curly': ['error', 'all'],
 			'no-labels': 'off',
 			'style/brace-style': ['error', '1tbs'],
+			'ts/no-unused-expressions': 'off',
 		},
 		formatters: true,
-	}, {
-		files: ['server/**/*'],
-		rules: {
-			'no-console': 'off',
-		},
 	}, unocss),
 );

@@ -13,20 +13,21 @@ const router = useRouter();
 const { TheDisconnectedStatus } = useDisconnectedStatus();
 
 const errorDialog = ref<InstanceType<typeof VDialog>>();
-const errorMessages = ref<string[]>([]);
+const { errors, clear, create } = useError();
+const errorMessages = computed(() => errors.value.map(e => e.message));
+const anyUnrecoverableErrors = computed(() => errors.value.some(e => e.unrecoverable));
 
 onErrorCaptured((error) => {
-	if (error instanceof VError) {
-		errorMessages.value.push(error.message);
-	} else {
-		errorMessages.value.push('Unknown error occured');
-	}
+	create(error.message, true);
 	errorDialog.value?.showModal();
 });
 
-function closeErrorDialog() {
+function closeErrorDialog(refresh: boolean) {
 	errorDialog.value?.close();
-	router.go(0);
+	clear();
+	if (refresh) {
+		router.go(0);
+	}
 }
 </script>
 
@@ -44,8 +45,8 @@ function closeErrorDialog() {
 				{{ message }}
 			</li>
 		</ul>
-		<button class="mx-auto w-fit button-red-5 dark:bg-red-7 hoverable:bg-red-7 dark:hoverable:bg-red-6" @click.prevent="closeErrorDialog">
-			refresh
+		<button class="mx-auto w-fit button-red-5 dark:bg-red-7 hoverable:bg-red-7 dark:hoverable:bg-red-6" @click.prevent="closeErrorDialog(anyUnrecoverableErrors)">
+			{{ anyUnrecoverableErrors ? 'refresh' : 'close' }}
 		</button>
 	</VDialog>
 	<TheDisconnectedStatus />
