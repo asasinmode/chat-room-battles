@@ -41,7 +41,7 @@ class RoomManager {
 
 			if (generationCounter > 10) {
 				roomLogger.debug(`code generation limit reached`);
-				throw new VError('code generation limit reached', 508);
+				throw new VError('roomCodeGenerationLimitReached', 508);
 			}
 
 			code = generateCode();

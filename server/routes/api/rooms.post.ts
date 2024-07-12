@@ -1,6 +1,8 @@
-import type { IServerRoom } from '~~/types/room';
+import type { IClientRoom, IServerRoom } from '~~/types/room';
 
-export default defineEventHandler(async (event) => {
+type IResponse = IClientRoom;
+
+export default defineEventHandler(async (event): Promise<IResponse> => {
 	let room: IServerRoom;
 
 	try {
@@ -8,16 +10,17 @@ export default defineEventHandler(async (event) => {
 	} catch (e) {
 		if (e instanceof VError) {
 			setResponseStatus(event, e.statusCode);
-			return 'roomCodeGenerationLimitReached';
+			return e.message as unknown as IResponse;
 		}
 		roomLogger.error(e);
 		setResponseStatus(event, 500);
-		return;
+		return undefined as unknown as IResponse;
 	}
 
 	return {
 		id: room.id,
 		name: room.name,
 		code: room.code,
+		playerCount: 0,
 	};
 });
