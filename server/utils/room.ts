@@ -40,8 +40,8 @@ class RoomManager {
 			roomLogger.debug(`duplicate code generated ${getColor('cyan')(code)}, iterations: ${getColor('yellow')(generationCounter)}`);
 
 			if (generationCounter > 10) {
-				roomLogger.error(`code generation limit reached`);
-				throw new Error('Code generation limit reached');
+				roomLogger.debug(`code generation limit reached`);
+				throw new VError('code generation limit reached', 508);
 			}
 
 			code = generateCode();
@@ -52,7 +52,7 @@ class RoomManager {
 	}
 
 	async roomWithCodeExists(code: string): Promise<boolean> {
-		// TMP
+		return true;
 		return this.rooms.some(r => r.code === code);
 		// const { roomExists } = await useDrizzle().get<{ roomExists: number }>(
 		// 	sql`SELECT EXISTS (SELECT 1 FROM ${tables.room} WHERE ${tables.room.code} = ${code}) as roomExists`,

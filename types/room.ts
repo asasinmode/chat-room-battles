@@ -1,14 +1,3 @@
-interface IPayloadCreateRoom {
-	type: 'createRoom';
-}
-
-interface IPayloadJoinRoom {
-	type: 'joinRoom';
-	data: {
-		code: string;
-	};
-}
-
 interface IPayloadReconnectRoom {
 	type: 'reconnectRoom';
 	data: {
@@ -16,20 +5,15 @@ interface IPayloadReconnectRoom {
 	};
 }
 
-export type IWSPayload = IPayloadCreateRoom | IPayloadJoinRoom | IPayloadReconnectRoom;
+export type IWSPayload = IPayloadReconnectRoom;
 
-export type IErrorCode = 'roomNotFound' | 'codeGenerationLimitReached';
+export type IErrorCode = 'unknown';
 
 interface IResponseError {
 	type: 'error';
 	data: {
 		code: IErrorCode;
 	};
-}
-
-interface IResponseRoomCreated {
-	type: 'roomCreated';
-	data: IClientRoom;
 }
 
 interface IResponsePlayerJoined {
@@ -49,7 +33,7 @@ interface IResponsePlayerDisconnected {
 	};
 }
 
-export type IRoomWSResponse = IResponseError | IResponseRoomCreated | IResponsePlayerJoined | IResponsePlayerDisconnected;
+export type IRoomWSResponse = IResponseError | IResponsePlayerJoined | IResponsePlayerDisconnected;
 
 export interface IRoom {
 	id: string;

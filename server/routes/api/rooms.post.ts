@@ -6,13 +6,13 @@ export default defineEventHandler(async (event) => {
 	try {
 		room = await useRoomManager().createRoom();
 	} catch (e) {
-		roomLogger.error(e);
 		if (e instanceof VError) {
 			setResponseStatus(event, e.statusCode);
-			return { message: e };
+			return 'roomCodeGenerationLimitReached';
 		}
+		roomLogger.error(e);
 		setResponseStatus(event, 500);
-		return {};
+		return;
 	}
 
 	return {

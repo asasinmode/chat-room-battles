@@ -4,14 +4,12 @@ useSeoMeta({ title: 'Start game' });
 const isCreatingRoom = ref(false);
 
 async function createRoom() {
-	console.log('creating room');
 	isCreatingRoom.value = true;
 	try {
 		const room = await $fetch('/api/rooms', { method: 'post' });
 		console.log('created', room);
 	} catch (e) {
-		console.error(e);
-		throw new VError('Creating room failed');
+		useVError().handle('creating room', e);
 	} finally {
 		isCreatingRoom.value = false;
 	}
@@ -27,8 +25,7 @@ async function joinRoom() {
 		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
 		console.log('joined', room);
 	} catch (e) {
-		console.error(e);
-		throw new VError('Joining room failed');
+		useVError().handle('joining room', e);
 	} finally {
 		isJoiningRoom.value = false;
 	}
