@@ -3,6 +3,8 @@ useSeoMeta({ title: 'Start game' });
 
 const isCreatingRoom = ref(false);
 
+const { open } = useGameRoom();
+
 async function createRoom() {
 	isCreatingRoom.value = true;
 	try {

@@ -1,28 +1,19 @@
 <script setup lang="ts">
-import type { IClientRoom, IRoomWSResponse, IWSPayload } from '~~/types/room';
+import type { IClientRoom } from '~~/types/room';
 
 definePageMeta({ layout: 'game' });
 useSeoMeta({ title: 'Play' });
 
 const { origin } = useRequestURL();
-const route = useRoute();
-// const router = useRouter();
 
-const isCodeInvalid = ref(false);
 const isGameStarted = ref(false);
-const isConnected = ref(false);
 
 const room = ref<IClientRoom>();
 
-const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
-	roomCreated(data) {
-		console.log('room created', data);
-		room.value = data;
-	},
+const ws = useGameRoom({
 	playerJoined(data) {
 		if (!room.value) {
-			// TODO alert error somehow
-			console.error('player joined but room doesn\'t exist');
+			useVError().create('received player joined event but room isn\'t set', 'room');
 			return;
 		}
 
@@ -40,37 +31,9 @@ const ws = useApiWebsocket<IWSPayload, IRoomWSResponse>('_rooms', {
 		room.value.playerCount = data.playerCount;
 	},
 	error(data) {
-		if (data.code === 'roomNotFound') {
-			isCodeInvalid.value = true;
-			ws.close();
-			return;
-		}
 		console.log('oopsie error', data);
 	},
-}, () => {
-	if (!room.value) {
-		console.error('reconnected with no room set');
-		return;
-	}
-	ws.send({ type: 'reconnectRoom', data: { id: room.value.id } });
-}, () => {
-	console.log('connected :)');
 });
-
-if ('createRoom' in route.query) {
-	ws.send({ type: 'createRoom' });
-} else if (route.query.join) {
-	ws.send({
-		type: 'joinRoom',
-		data: {
-			code: route.query.join as string,
-		},
-	});
-} else {
-	navigateTo('/start', { replace: true });
-}
-
-// router.replace({ query: {} });
 
 const copyTooltip = ref<HTMLDialogElement>();
 

@@ -52,7 +52,6 @@ class RoomManager {
 	}
 
 	async roomWithCodeExists(code: string): Promise<boolean> {
-		return true;
 		return this.rooms.some(r => r.code === code);
 		// const { roomExists } = await useDrizzle().get<{ roomExists: number }>(
 		// 	sql`SELECT EXISTS (SELECT 1 FROM ${tables.room} WHERE ${tables.room.code} = ${code}) as roomExists`,

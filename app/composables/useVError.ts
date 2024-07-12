@@ -17,8 +17,8 @@ const unknownError: Readonly<IError> = { message: 'unknown error', unrecoverable
 
 let open: (() => void) | undefined;
 
-function create(message: string, unrecoverable = false) {
-	errors.value.push({ message, unrecoverable });
+function create(message: string, prefix?: string, unrecoverable = false) {
+	errors.value.push({ message, unrecoverable, prefix });
 	open?.();
 }
 
@@ -44,7 +44,7 @@ const ErrorDialog = defineComponent(() => {
 	const anyUnrecoverable = computed(() => errors.value.some(e => e.unrecoverable));
 
 	onErrorCaptured((error) => {
-		create(error.message, true);
+		create(error.message, undefined, true);
 		dialog.value?.showModal();
 	});
 
