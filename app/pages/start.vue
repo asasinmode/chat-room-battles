@@ -41,8 +41,12 @@ async function joinRoom() {
 
 <template>
 	<section class="h-full flex flex-col overflow-x-hidden overflow-y-auto">
-		<button class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable" @click="createRoom">
-			create room
+		<button
+			class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable"
+			:aria-busy="isCreatingRoom"
+			@click="createRoom"
+		>
+			<BouncingText text="create room" :is-bouncing="isCreatingRoom" absolute-dots />
 		</button>
 
 		<div class="flex flex-col items-center b-(b-2 black) pb-4 dark:b-white">
@@ -60,7 +64,7 @@ async function joinRoom() {
 					@input="uppercaseRoomCode"
 				>
 				<button
-					class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5"
+					class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5"
 					@click="joinRoom"
 				>
 					Join
