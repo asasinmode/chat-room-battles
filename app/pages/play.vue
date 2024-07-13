@@ -21,10 +21,18 @@ const gameRoom = useGameRoom({
 		console.log('player disconnected', data);
 		gameRoom.room.value.playerCount = data.playerCount;
 	},
+	reconnected(data) {
+		console.log('reconnected', data);
+		gameRoom.room.value = data;
+	},
 	error(data) {
 		console.log('oopsie error', data);
 	},
 });
+
+if (!gameRoom.room.value) {
+	navigateTo('/');
+}
 
 const copyTooltip = ref<HTMLDialogElement>();
 
@@ -45,7 +53,7 @@ function copyRoomCodeLink() {
 					{{ gameRoom.room.value?.code }}
 				</span>
 				<div class="relative">
-					<button class="relative w-fit b-(2 black) button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:b-white dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click.stop="copyRoomCodeLink">
+					<button class="relative w-fit b-(2 black) rounded-lg px-2 py-1 font-600 uppercase button-blue-4 dark:b-white dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5" @click.stop="copyRoomCodeLink">
 						copy link
 					</button>
 					<dialog

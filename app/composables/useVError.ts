@@ -9,16 +9,27 @@ interface IError {
 	unrecoverable?: boolean;
 }
 
-const errors = ref<IError[]>([]);
+export class VError extends Error implements IError {
+	prefix?: string;
+	unrecoverable?: boolean;
+
+	constructor(message: string, prefix?: string, unrecoverable?: boolean) {
+		super(message);
+		this.prefix = prefix;
+		this.unrecoverable = unrecoverable;
+	}
+}
+
+const errors = ref<VError[]>([]);
 const errorCodesToData: Record<IErrorCode, IError> = {
 	roomCodeGenerationLimitReached: { message: 'code generation limit reached' },
 };
-const unknownError: Readonly<IError> = { message: 'unknown error', unrecoverable: true };
+const unknownError = new VError('unknown error', undefined, true);
 
 let open: (() => void) | undefined;
 
 function create(message: string, prefix?: string, unrecoverable = false) {
-	errors.value.push({ message, unrecoverable, prefix });
+	errors.value.push(new VError(message, prefix, unrecoverable));
 	open?.();
 }
 
@@ -27,10 +38,12 @@ function handle(prefix: string, error: unknown) {
 	if (error instanceof FetchError) {
 		const knownError = errorCodesToData[error.data as IErrorCode];
 		if (knownError) {
-			errors.value.push({ message: knownError.message, unrecoverable: knownError.unrecoverable, prefix });
+			errors.value.push(new VError(knownError.message, prefix, knownError.unrecoverable));
 		} else {
 			errors.value.push(unknownError);
 		}
+	} else if (error instanceof VError) {
+		errors.value.push(error);
 	} else {
 		errors.value.push(unknownError);
 	}

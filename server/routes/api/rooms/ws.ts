@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import type { Peer } from 'crossws';
-import type { IRoomWSResponse, IServerRoom, IWSPayload } from '~~/types/room';
+import type { IRoomWSResponse, IWSPayload } from '~~/types/room';
+
+const roomManager = useRoomManager();
 
 export default defineWebSocketHandler({
 	open(peer) {
@@ -39,7 +41,7 @@ export default defineWebSocketHandler({
 	close(peer, event) {
 		console.log('[ws] close', peer, peer.id, event);
 
-		const room = rooms.find(room => room.connectedPlayers.some(p => p.wsId === peer.id));
+		const room = roomManager.rooms.find(room => room.connectedPlayers.some(p => p.wsId === peer.id));
 		if (!room) {
 			return;
 		}
@@ -66,8 +68,8 @@ export default defineWebSocketHandler({
 		if (!room.connectedPlayers.length) {
 			roomLogger.debug(`no players left in ${roomIdentifier}, removing it in 10 seconds`);
 			room.removeTimeout = setTimeout(() => {
-				const roomIndex = rooms.findIndex(r => r.id === room.id);
-				~roomIndex && rooms.splice(roomIndex, 1);
+				const roomIndex = roomManager.rooms.findIndex(r => r.id === room.id);
+				~roomIndex && roomManager.rooms.splice(roomIndex, 1);
 				roomLogger.debug(`removed room ${roomIdentifier}`);
 			}, 10000);
 		}
@@ -79,87 +81,8 @@ export default defineWebSocketHandler({
 });
 
 async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSResponse> {
-	if (payload.type === 'createRoom') {
-		const code = await createRoomCode();
-
-		if (!code) {
-			return {
-				type: 'error',
-				data: {
-					code: 'codeGenerationLimitReached',
-				},
-			};
-		}
-
-		const room: IServerRoom = {
-			id: randomUUID(),
-			code,
-			name: 'Party Animals',
-			connectedPlayers: [{
-				id: randomUUID(),
-				wsId: peer.id,
-				fullName: 'Original Omar',
-			}],
-		};
-
-		rooms.push(room);
-		peer.subscribe(room.id);
-
-		roomLogger.debug(`created room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
-
-		return {
-			type: 'roomCreated',
-			data: {
-				id: room.id,
-				code: room.code,
-				name: room.name,
-				playerCount: 1,
-			},
-		};
-	} else if (payload.type === 'joinRoom') {
-		const room = rooms.find(room => room.code === payload.data.code);
-		if (!room) {
-			return {
-				type: 'error',
-				data: {
-					code: 'roomNotFound',
-				},
-			};
-		}
-
-		const player = {
-			id: randomUUID(),
-			wsId: peer.id,
-			fullName: 'Caring Cassidy',
-		};
-		room.connectedPlayers.push(player);
-
-		const playerCount = room.connectedPlayers.length;
-
-		peer.publish(room.id, {
-			type: 'playerJoined',
-			data: {
-				playerCount,
-				id: player.id,
-				fullName: player.fullName,
-			},
-		} satisfies IRoomWSResponse);
-		peer.subscribe(room.id);
-
-		roomLogger.debug(`player ${logIdentifiers(player.fullName, player.id)} joined room ${logIdentifiers(room.name, `${room.id}, ${room.code}`)}`);
-
-		return {
-			type: 'roomCreated',
-			data: {
-				id: room.id,
-				code: room.code,
-				name: room.name,
-				playerCount,
-			},
-		};
-	} else if (payload.type === 'reconnectRoom') {
-		// TODO this and on close will have to be reworked once there are player accounts
-		const room = rooms.find(r => r.id === payload.data.id);
+	if (payload.type === 'reconnectRoom') {
+		const room = roomManager.rooms.find(r => r.id === payload.data.id);
 		if (!room) {
 			return {
 				type: 'error',
@@ -198,12 +121,19 @@ async function handleMessage(peer: Peer, payload: IWSPayload): Promise<IRoomWSRe
 		peer.subscribe(room.id);
 
 		return {
-			type: 'roomCreated',
+			type: 'reconnected',
 			data: {
 				id: room.id,
 				code: room.code,
 				name: room.name,
 				playerCount,
+			},
+		};
+	} else if (payload.type === 'shop') {
+		return {
+			type: 'error',
+			data: {
+				code: 'roomNotFound',
 			},
 		};
 	}

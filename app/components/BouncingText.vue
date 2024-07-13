@@ -9,7 +9,7 @@ const computedText = computed(() => (props.isBouncing ? props.text.concat('...')
 </script>
 
 <template>
-	<span class="bouncing-letters relative inline-block">
+	<span class="bouncing-letters relative inline-block leading-normal">
 		<span class="sr-only">{{ text }}</span>
 		<span
 			v-for="(letter, index) in computedText.split('')"
@@ -30,17 +30,23 @@ const computedText = computed(() => (props.isBouncing ? props.text.concat('...')
 </template>
 
 <style>
-.bouncing-letters > .bouncing-dot:nth-last-child(2) {
-	@apply 'translate-x-full';
-}
+.bouncing-letters {
+	> .bouncing-dot.absolute:nth-last-child(1) {
+		@apply 'translate-x-[200%]';
+	}
 
-.bouncing-letters > .bouncing-dot:nth-last-child(1) {
-	@apply 'translate-x-[200%]';
+	> .bouncing-dot.absolute:nth-last-child(2) {
+		@apply 'translate-x-full';
+	}
 }
 
 .bouncing-letter {
-	animation: letter-bounce var(--bounce-duration, 1.9s) ease-in-out
+	animation: letter-bounce var(--bounce-duration, 1.8s) ease-in-out
 		calc(var(--letter-index) * 40ms) infinite;
+
+	.fast & {
+		animation-name: letter-bounce-fast;
+	}
 }
 
 @keyframes letter-bounce {
@@ -49,10 +55,24 @@ const computedText = computed(() => (props.isBouncing ? props.text.concat('...')
 	}
 
 	12.5% {
-		translate: 0 -15%;
+		translate: 0 -0.3em;
 	}
 
 	25% {
+		translate: 0 0;
+	}
+}
+
+@keyframes letter-bounce-fast {
+	0% {
+		translate: 0 0;
+	}
+
+	15% {
+		translate: 0 -0.3em;
+	}
+
+	30% {
 		translate: 0 0;
 	}
 }

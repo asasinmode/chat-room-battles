@@ -1,6 +1,11 @@
 import type { IClientRoom, IRoomWSResponse, IWSPayload } from '~~/types/room';
 
 let ws: ReturnType<typeof useWebSocket>;
+
+let hasDisconnected = false;
+let openResolve: (() => void) | undefined;
+let openReject: ((reason?: any) => void) | undefined;
+
 const room = ref<IClientRoom>();
 const hasGameStarted = ref(false);
 
@@ -9,8 +14,6 @@ export function useGameRoom(
 		[K in IRoomWSResponse['type']]: (data: Extract<IRoomWSResponse, { type: K }>['data']) => void;
 	},
 ) {
-	let hasDisconnected = false;
-
 	if (!ws) {
 		const { protocol, host } = useRequestURL();
 		const { showStatus, closeStatus } = useDisconnectedStatus();
@@ -33,8 +36,7 @@ export function useGameRoom(
 				if (event.code === 1000) {
 					return;
 				}
-				console.error('websockets closed with error');
-				console.error(event);
+				console.error('websockets closed with error', event);
 				hasDisconnected = true;
 				showStatus();
 			},
@@ -43,6 +45,19 @@ export function useGameRoom(
 				if (hasDisconnected) {
 					hasDisconnected = false;
 					closeStatus();
+				} else {
+					openResolve?.();
+					openResolve = undefined;
+					openReject = undefined;
+				}
+			},
+
+			onError(_ws, event) {
+				console.error('websocket error', event);
+				if (!hasDisconnected) {
+					openReject?.(new VError('failed to connect to the server', 'creating/joining room'));
+					openResolve = undefined;
+					openReject = undefined;
 				}
 			},
 		});
@@ -53,7 +68,11 @@ export function useGameRoom(
 			ws.send(JSON.stringify(data));
 		},
 		close: ws.close,
-		open: ws.open,
+		open: () => new Promise<void>((resolve, reject) => {
+			openResolve = resolve;
+			openReject = reject;
+			ws.open();
+		}),
 		setRoom(data: IClientRoom) {
 			room.value = data;
 		},

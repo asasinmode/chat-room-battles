@@ -5,9 +5,16 @@ interface IPayloadReconnectRoom {
 	};
 }
 
-export type IWSPayload = IPayloadReconnectRoom;
+interface IPayloadShop {
+	type: 'shop';
+	data: {
+		tmp: string;
+	};
+}
 
-export type IErrorCode = 'unknown';
+export type IWSPayload = IPayloadReconnectRoom | IPayloadShop;
+
+export type IErrorCode = 'roomNotFound';
 
 interface IResponseError {
 	type: 'error';
@@ -33,7 +40,12 @@ interface IResponsePlayerDisconnected {
 	};
 }
 
-export type IRoomWSResponse = IResponseError | IResponsePlayerJoined | IResponsePlayerDisconnected;
+interface IResponseReconnected {
+	type: 'reconnected';
+	data: IClientRoom;
+}
+
+export type IRoomWSResponse = IResponseError | IResponsePlayerJoined | IResponsePlayerDisconnected | IResponseReconnected;
 
 export interface IRoom {
 	id: string;

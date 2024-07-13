@@ -1,15 +1,17 @@
 <script setup lang="ts">
 useSeoMeta({ title: 'Start game' });
 
-const isCreatingRoom = ref(false);
+const { open, setRoom } = useGameRoom();
 
-const { open } = useGameRoom();
+const isCreatingRoom = ref(false);
 
 async function createRoom() {
 	isCreatingRoom.value = true;
 	try {
 		const room = await $fetch('/api/rooms', { method: 'post' });
-		console.log('created', room);
+		setRoom(room);
+		await open();
+		await navigateTo('/play');
 	} catch (e) {
 		useVError().handle('creating room', e);
 	} finally {
@@ -46,7 +48,13 @@ async function joinRoom() {
 			:aria-busy="isCreatingRoom"
 			@click="createRoom"
 		>
-			<BouncingText text="create room" :is-bouncing="isCreatingRoom" absolute-dots />
+			<BouncingText
+				text="create room"
+				class="fast"
+				style="--bounce-duration: 1.5s"
+				:is-bouncing="isCreatingRoom"
+				absolute-dots
+			/>
 		</button>
 
 		<div class="flex flex-col items-center b-(b-2 black) pb-4 dark:b-white">
