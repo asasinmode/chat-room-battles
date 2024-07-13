@@ -19,6 +19,14 @@ html.dark {
 	background: theme('colors.zinc.900');
 }
 
+*:focus-visible {
+	outline: 2px solid theme('colors.violet.400');
+}
+
+.dark *:focus-visible {
+	outline-color: theme('colors.violet.500');
+}
+
 @media (prefers-reduced-motion) {
 	*,
 	*::before,
