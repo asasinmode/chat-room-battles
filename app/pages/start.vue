@@ -18,6 +18,11 @@ async function createRoom() {
 }
 
 const roomCode = ref('');
+
+function uppercaseRoomCode() {
+	roomCode.value = roomCode.value.toUpperCase();
+}
+
 const isJoiningRoom = ref(false);
 
 async function joinRoom() {
@@ -49,11 +54,13 @@ async function joinRoom() {
 				<input
 					id="roomCode"
 					v-model="roomCode"
-					placeholder="1A2B3"
-					class="min-w-0 w-18 justify-self-center rounded-lg bg-zinc-2 px-1 py-1 text-center dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc"
+					placeholder="A1B2C"
+					class="min-w-0 w-16 justify-self-center b-(2 black) rounded-lg bg-zinc-2 px-1 py-1 text-center dark:b-white dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc"
+					maxlength="5"
+					@input="uppercaseRoomCode"
 				>
 				<button
-					class="ml-3 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5"
+					class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5"
 					@click="joinRoom"
 				>
 					Join

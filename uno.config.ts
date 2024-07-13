@@ -23,20 +23,7 @@ export default defineConfig({
 			'main-menu-link': 'h-12 font-600 leading-11 tracking-wider uppercase block px-2 text-center',
 			'base-button-hoverable': 'hover:bg-zinc-2 focus-visible:bg-zinc-2 dark:hover:bg-zinc-8 dark:focus-visible:bg-zinc-8',
 		},
-		[/^button[:-](.+)$/, ([, c]) => `px-3 py-1 font-600 uppercase rounded-lg bg-${c}`],
-	],
-	variants: [
-		(matcher) => {
-			if (matcher.slice(0, 10) !== 'hoverable:') {
-				return matcher;
-			}
-
-			return {
-				matcher: matcher.slice(10),
-				selector: (s) => {
-					return `${s}:hover, ${s}:focus-visible`;
-				},
-			};
-		},
+		[/^button[:-](.+)$/, ([, c]) => `px-3 py-1 font-600 uppercase rounded-lg bg-${c} b-2 b-black dark:b-white`],
+		[/^hoverable[:-](.+)$/, ([, c]) => `hover:${c} focus-visible:${c}`],
 	],
 });

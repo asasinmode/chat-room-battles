@@ -1,34 +1,25 @@
 <script setup lang="ts">
-import type { IClientRoom } from '~~/types/room';
-
 definePageMeta({ layout: 'game' });
 useSeoMeta({ title: 'Play' });
 
 const { origin } = useRequestURL();
 
-const isGameStarted = ref(false);
-
-const room = ref<IClientRoom>();
-
-const ws = useGameRoom({
+const gameRoom = useGameRoom({
 	playerJoined(data) {
-		if (!room.value) {
+		if (!gameRoom.room.value) {
 			useVError().create('received player joined event but room isn\'t set', 'room');
 			return;
 		}
-
 		console.log('player joined', data);
-		room.value.playerCount = data.playerCount;
+		gameRoom.room.value.playerCount = data.playerCount;
 	},
 	playerDisconnected(data) {
-		if (!room.value) {
-			// TODO alert error somehow
-			console.error('disconnected with no room set');
+		if (!gameRoom.room.value) {
+			useVError().create('received player disconnected event but room isn\'t set', 'room');
 			return;
 		}
-
 		console.log('player disconnected', data);
-		room.value.playerCount = data.playerCount;
+		gameRoom.room.value.playerCount = data.playerCount;
 	},
 	error(data) {
 		console.log('oopsie error', data);
@@ -38,28 +29,28 @@ const ws = useGameRoom({
 const copyTooltip = ref<HTMLDialogElement>();
 
 function copyRoomCodeLink() {
-	useClipboard().copy(`${origin}/play?join=${room.value?.code || ''}`);
+	useClipboard().copy(`${origin}/play?join=${gameRoom.room.value?.code || ''}`);
 	copyTooltip.value?.show();
 }
 </script>
 
 <template>
 	<main class="">
-		<div v-if="!isGameStarted" class="flex flex-col items-center pb-4">
-			<h1 class="main-menu-link">
+		<div v-if="!gameRoom.hasGameStarted.value" class="flex flex-col items-center pb-4">
+			<h1 id="roomCodeTitle" class="main-menu-link">
 				Room code
 			</h1>
-			<div class="flex flex-wrap justify-center gap-x-5 gap-y-2 px-2">
-				<span class="col-span-2 w-fit justify-self-center rounded-lg bg-zinc-2 px-2 py-1 dark:bg-zinc-8">
-					{{ room?.code }}
+			<div class="flex flex-wrap justify-center gap-x-4 gap-y-2 px-2">
+				<span class="col-span-2 w-fit justify-self-center b-(2 black) rounded-lg bg-zinc-2 px-2 py-1 dark:b-white dark:bg-zinc-8" aria-labelledby="roomCodeTitle">
+					{{ gameRoom.room.value?.code }}
 				</span>
 				<div class="relative">
-					<button class="relative w-fit button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click.stop="copyRoomCodeLink">
+					<button class="relative w-fit b-(2 black) button-blue-4 rounded-lg px-2 py-1 font-600 uppercase dark:b-white dark:bg-blue-6 hoverable:bg-blue-5 dark:hoverable:bg-blue-5" @click.stop="copyRoomCodeLink">
 						copy link
 					</button>
 					<dialog
 						ref="copyTooltip"
-						class="rounded-md px-2 py-1 text-3 -top-1 -translate-y-full"
+						class="b b-black rounded-md px-2 py-1 text-3 shadow-sm -top-1 -translate-y-full dark:b-white"
 						@focusout="copyTooltip?.close()"
 						@keydown.esc="copyTooltip?.close()"
 					>
@@ -72,51 +63,11 @@ function copyRoomCodeLink() {
 				They should paste the whole link into their browser or paste the code into the <b>Join room</b> input.
 			</p>
 			<p class="mt-2 text-zinc-5 tracking-tight dark:text-zinc" style="--wave-duration: 1.5s">
-				<span class="sr-only">Waiting for players...</span>
-				<span
-					v-for="(letter, index) of 'Waiting for players...'.split('')"
-					:key="index"
-					:class="letter === ' ' ? 'w-1' : letter === '.' ? 'wavy-dot' : ''"
-					:style="`--wave-index: ${index}`"
-					class="wavy-letter-waiting-for-players inline-block"
-					aria-hidden="true"
-				>
-					{{ letter }}
-				</span>
+				<BouncingText is-bouncing text="Waiting for players" />
 				<span class="ml-1">
-					{{ room?.playerCount ?? 0 }} / 2
+					{{ gameRoom.room.value?.playerCount ?? 0 }} / 2
 				</span>
 			</p>
 		</div>
-		<button @click="ws.open()">
-			connect on create room click; same with join? then move query to start page
-		</button>
 	</main>
 </template>
-
-<style>
-.wavy-letter-waiting-for-players {
-	animation: letter-bounce-waiting-for-players 1.8s ease-in-out
-		calc(var(--wave-index) * 40ms) infinite;
-}
-
-@keyframes letter-bounce-waiting-for-players {
-	0% {
-		translate: 0 0;
-	}
-
-	12% {
-		translate: 0 -15%;
-	}
-
-	24% {
-		translate: 0 0;
-	}
-}
-
-@media (prefers-reduced-motion) {
-	.wavy-letter-waiting-for-players {
-		animation: none;
-	}
-}
-</style>

@@ -2,6 +2,7 @@ import type { IClientRoom, IRoomWSResponse, IWSPayload } from '~~/types/room';
 
 let ws: ReturnType<typeof useWebSocket>;
 const room = ref<IClientRoom>();
+const hasGameStarted = ref(false);
 
 export function useGameRoom(
 	messageHandlers?: {
@@ -57,5 +58,6 @@ export function useGameRoom(
 			room.value = data;
 		},
 		room,
+		hasGameStarted,
 	};
 };
