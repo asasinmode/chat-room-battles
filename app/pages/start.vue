@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import VInput from '~/components/V/VInput.vue';
+
 useSeoMeta({ title: 'Start game' });
 
 const { open, setRoom } = useGameRoom();
@@ -20,24 +22,21 @@ async function createRoom() {
 }
 
 const roomCode = ref('');
-
-function uppercaseRoomCode(value: string) {
-	roomCode.value = value.toUpperCase();
-}
-
 const isJoiningRoom = ref(false);
+const roomCodeInput = ref<InstanceType<typeof VInput>>();
 
 async function joinRoom() {
 	console.log('joining room');
-	isJoiningRoom.value = true;
-	try {
-		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
-		console.log('joined', room);
-	} catch (e) {
-		useVError().handle('joining room', e);
-	} finally {
-		isJoiningRoom.value = false;
-	}
+	roomCodeInput.value?.validate();
+	// isJoiningRoom.value = true;
+	// try {
+	// 	const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
+	// 	console.log('joined', room);
+	// } catch (e) {
+	// 	useVError().handle('joining room', e);
+	// } finally {
+	// 	isJoiningRoom.value = false;
+	// }
 }
 </script>
 
@@ -64,12 +63,13 @@ async function joinRoom() {
 			<form class="flex items-center gap-2 px-2" @submit.prevent="joinRoom">
 				<VInput
 					id="roomCode"
+					ref="roomCodeInput"
 					label="Code or link:"
 					class="w-16 text-center"
-					maxlength="5"
 					placeholder="A1B2C"
 					:model-value="roomCode"
-					@update:model-value="uppercaseRoomCode"
+					:validation="roomCodeValidation"
+					:input-transform="value => value.toUpperCase()"
 				/>
 				<button class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5">
 					Join
