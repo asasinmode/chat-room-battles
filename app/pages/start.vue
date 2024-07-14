@@ -23,20 +23,31 @@ async function createRoom() {
 
 const roomCode = ref('');
 const isJoiningRoom = ref(false);
+const isRoomCodeInvalid = ref(false);
+const showFormInvalidMessage = ref(false);
 const roomCodeInput = ref<InstanceType<typeof VInput>>();
 
 async function joinRoom() {
+	if (!roomCodeInput.value) {
+		throw new VError('code input element not found', 'joining room', true);
+	}
+
+	isRoomCodeInvalid.value = !roomCodeInput.value.validate();
+	if (isRoomCodeInvalid.value) {
+		showFormInvalidMessage.value = true;
+		return;
+	}
+
 	console.log('joining room');
-	roomCodeInput.value?.validate();
-	// isJoiningRoom.value = true;
-	// try {
-	// 	const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
-	// 	console.log('joined', room);
-	// } catch (e) {
-	// 	useVError().handle('joining room', e);
-	// } finally {
-	// 	isJoiningRoom.value = false;
-	// }
+	isJoiningRoom.value = true;
+	try {
+		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
+		console.log('joined', room);
+	} catch (e) {
+		useVError().handle('joining room', e);
+	} finally {
+		isJoiningRoom.value = false;
+	}
 }
 </script>
 
@@ -67,13 +78,20 @@ async function joinRoom() {
 					label="Code or link:"
 					class="w-16 text-center"
 					placeholder="A1B2C"
+					aria-required="true"
 					:model-value="roomCode"
 					:validation="roomCodeValidation"
 					:input-transform="value => value.toUpperCase()"
 				/>
-				<button class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5">
+				<button
+					class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5"
+					@focusout="showFormInvalidMessage = false"
+				>
 					Join
 				</button>
+				<p class="sr-only" aria-live="assertive">
+					{{ isRoomCodeInvalid && showFormInvalidMessage ? 'Error: invalid code or link' : '' }}
+				</p>
 			</form>
 		</div>
 

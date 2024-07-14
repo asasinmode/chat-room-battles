@@ -58,7 +58,7 @@ function copyRoomCodeLink() {
 					</button>
 					<dialog
 						ref="copyTooltip"
-						class="b b-black rounded-md px-2 py-1 text-3 shadow-sm -top-1 -translate-y-full dark:b-white"
+						class="b b-black rounded-md px-2 py-1 text-3 shadow -top-1 -translate-y-full dark:b-white"
 						@focusout="copyTooltip?.close()"
 						@keydown.esc="copyTooltip?.close()"
 					>

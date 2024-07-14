@@ -30,7 +30,7 @@ function handleInput(event: Event) {
 	validate(isDirty.value);
 }
 
-function validate(openDialog = true) {
+function validate(openDialog = true): boolean {
 	if (!props.validation || (!isDirty.value && !openDialog)) {
 		return true;
 	}
@@ -70,7 +70,7 @@ function handleDialogFocusOut(event: FocusEvent) {
 defineExpose({
 	validate() {
 		isDirty.value = true;
-		validate();
+		return validate();
 	},
 });
 </script>
@@ -85,20 +85,24 @@ defineExpose({
 			v-bind="$attrs"
 			class="min-w-0 b-(2 black) rounded-lg bg-zinc-2 px-1 py-1 dark:b-white dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc"
 			:class="isInvalid ? '!b-red-5 !bg-red-1 dark:!b-red-6 dark:!bg-red-950' : ''"
-			:aria-describedby="`${id}ErrorDialog`"
+			:aria-invalid="isInvalid"
+			:aria-describedby="`${id}ErrorMessage`"
+			:aria-errormessage="`${id}ErrorMessage`"
+			autocomplete="off"
 			@input="handleInput"
 			@focusin="handleFocusIn"
 			@focusout="handleFocusOut"
 		>
 		<dialog
 			v-if="validation"
-			:id="`${id}ErrorDialog`"
 			ref="errorDialog"
-			:aria-label="`${label}`"
-			class="left-1/2 translate-y-full whitespace-nowrap b-(2 black) rounded-md px-2 py-1 text-3 shadow-sm after:(absolute bottom-full left-1/2 b-[0.25rem] b-transparent b-b-black content-empty -ml-1) -bottom-1 -translate-x-1/2 dark:b-white dark:after:b-b-white"
+			:aria-label="`${label} error`"
+			class="left-1/2 whitespace-nowrap b-(2 black) rounded-md px-2 py-1 text-3 shadow after:(absolute left-1/2 top-full b-[0.25rem] b-transparent b-t-black content-empty -ml-1) -top-1 -translate-x-1/2 -translate-y-full dark:b-white dark:after:b-t-white"
 			@focusout="handleDialogFocusOut"
 		>
-			{{ errors[0]?.message }}
+			<p :id="`${id}ErrorMessage`" aria-live="polite">
+				{{ errors[0]?.message }}
+			</p>
 		</dialog>
 	</div>
 </template>
