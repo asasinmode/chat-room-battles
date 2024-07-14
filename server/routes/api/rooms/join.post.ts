@@ -1,7 +1,7 @@
 export default defineEventHandler(async (event) => {
-	const body = await readBody(event);
+	// const body = await readBody(event);
 
-	console.log('joining room', body);
+	console.log('joining room');
 
-	return `joining ${body}`;
+	return 'a room :)';
 });

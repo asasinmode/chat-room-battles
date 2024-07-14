@@ -21,8 +21,8 @@ async function createRoom() {
 
 const roomCode = ref('');
 
-function uppercaseRoomCode() {
-	roomCode.value = roomCode.value.toUpperCase();
+function uppercaseRoomCode(value: string) {
+	roomCode.value = value.toUpperCase();
 }
 
 const isJoiningRoom = ref(false);
@@ -42,7 +42,7 @@ async function joinRoom() {
 </script>
 
 <template>
-	<section class="h-full flex flex-col overflow-x-hidden overflow-y-auto">
+	<section class="h-full flex flex-col">
 		<button
 			class="main-menu-link b-(b-2 black) dark:b-white base-button-hoverable"
 			:aria-busy="isCreatingRoom"
@@ -61,23 +61,20 @@ async function joinRoom() {
 			<h3 class="col-span-full main-menu-link">
 				join room
 			</h3>
-			<div class="flex items-center gap-2 px-2">
-				<label for="roomCode" class="h-fit">Code or link:</label>
-				<input
+			<form class="flex items-center gap-2 px-2" @submit.prevent="joinRoom">
+				<VInput
 					id="roomCode"
-					v-model="roomCode"
-					placeholder="A1B2C"
-					class="min-w-0 w-16 justify-self-center b-(2 black) rounded-lg bg-zinc-2 px-1 py-1 text-center dark:b-white dark:bg-zinc-8 placeholder-zinc-5 dark:placeholder-zinc"
+					label="Code or link:"
+					class="w-16 text-center"
 					maxlength="5"
-					@input="uppercaseRoomCode"
-				>
-				<button
-					class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5"
-					@click="joinRoom"
-				>
+					placeholder="A1B2C"
+					:model-value="roomCode"
+					@update:model-value="uppercaseRoomCode"
+				/>
+				<button class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5">
 					Join
 				</button>
-			</div>
+			</form>
 		</div>
 
 		<p class="mx-2 my-4 w-fit self-center b-(2 yellow) rounded-lg bg-yellow-1 px-3 py-1 text-center text-5 dark:b-yellow-6 dark:bg-yellow-950">
