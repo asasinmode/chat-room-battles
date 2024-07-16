@@ -37,7 +37,7 @@ function handleInput(event: Event) {
 	if (serverErrors.value) {
 		serverErrors.value = undefined;
 	}
-	validate(isDirty.value);
+	nextTick(() => validate(isDirty.value));
 }
 
 function validate(openDialog = true): boolean {
