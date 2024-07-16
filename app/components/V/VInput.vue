@@ -11,14 +11,21 @@ const props = defineProps<{
 	classInputContainer?: any;
 	validation?: v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>;
 	inputTransform?: (value: string) => string;
+	srErrorId?: string;
+	srErrorText?: string;
 }>();
 
 const modelValue = defineModel<string>({ required: true });
 const errorDialog = ref<HTMLDialogElement>();
 const input = ref<HTMLInputElement>();
 const errors = ref<v.BaseIssue<unknown>[]>([]);
+const serverErrors = ref<string[]>();
 const isDirty = ref(false);
-const isInvalid = computed(() => isDirty.value && !!errors.value.length);
+const computedError = computed(() =>
+	serverErrors.value?.[0] || errors.value[0]?.message,
+);
+const isInvalid = computed(() => !!(isDirty.value && computedError.value));
+const isSrErrorSetUp = computed(() => !!(props.srErrorId && props.srErrorText));
 
 function handleInput(event: Event) {
 	const { value } = event.target as HTMLInputElement;
@@ -26,6 +33,9 @@ function handleInput(event: Event) {
 		modelValue.value = props.inputTransform(value);
 	} else {
 		modelValue.value = value;
+	}
+	if (serverErrors.value) {
+		serverErrors.value = undefined;
 	}
 	validate(isDirty.value);
 }
@@ -43,6 +53,7 @@ function validate(openDialog = true): boolean {
 		errors.value = result.issues;
 		if (openDialog && errorDialog.value) {
 			errorDialog.value.open = true;
+			showSrError();
 		}
 	}
 
@@ -67,10 +78,28 @@ function handleDialogFocusOut(event: FocusEvent) {
 	}
 }
 
+function showSrError() {
+	if (isSrErrorSetUp.value) {
+		const errorElement = document.getElementById(props.srErrorId!);
+		if (errorElement) {
+			errorElement.textContent = props.srErrorText!;
+		}
+	}
+}
+
 defineExpose({
 	validate() {
 		isDirty.value = true;
 		return validate();
+	},
+	handleServerErrors(errors?: string[]) {
+		serverErrors.value = errors;
+		if (errors?.length) {
+			showSrError();
+			if (errorDialog.value) {
+				errorDialog.value.open = true;
+			}
+		}
 	},
 });
 </script>
@@ -101,7 +130,7 @@ defineExpose({
 			@focusout="handleDialogFocusOut"
 		>
 			<p :id="`${id}ErrorMessage`" aria-live="polite">
-				{{ errors[0]?.message }}
+				{{ computedError }}
 			</p>
 		</dialog>
 	</div>

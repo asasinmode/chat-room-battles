@@ -24,7 +24,6 @@ async function createRoom() {
 const roomCode = ref('');
 const isJoiningRoom = ref(false);
 const isRoomCodeInvalid = ref(false);
-const showFormInvalidMessage = ref(false);
 const roomCodeInput = ref<InstanceType<typeof VInput>>();
 
 async function joinRoom() {
@@ -34,19 +33,25 @@ async function joinRoom() {
 
 	isRoomCodeInvalid.value = !roomCodeInput.value.validate();
 	if (isRoomCodeInvalid.value) {
-		showFormInvalidMessage.value = true;
 		return;
 	}
 
-	console.log('joining room');
 	isJoiningRoom.value = true;
 	try {
-		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
-		console.log('joined', room);
+		const room = await $fetch('/api/rooms/join', { method: 'post', body: '' });
+		console.log('room', room);
 	} catch (e) {
-		useVError().handle('joining room', e);
+		useVError().handle('joining room', e, ({ code }) => roomCodeInput.value?.handleServerErrors(code));
 	} finally {
 		isJoiningRoom.value = false;
+	}
+}
+
+const roomCodeSrError = ref<HTMLPreElement>();
+
+function clearRoomCodeSrError() {
+	if (roomCodeSrError.value) {
+		roomCodeSrError.value.textContent = '';
 	}
 }
 </script>
@@ -75,23 +80,23 @@ async function joinRoom() {
 				<VInput
 					id="roomCode"
 					ref="roomCodeInput"
+					v-model="roomCode"
 					label="Code or link:"
 					class="w-16 text-center"
 					placeholder="A1B2C"
 					aria-required="true"
-					:model-value="roomCode"
+					sr-error-text="invalid code or link"
+					sr-error-id="roomCodeSrError"
 					:validation="roomCodeValidation"
 					:input-transform="value => value.toUpperCase()"
 				/>
 				<button
 					class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5"
-					@focusout="showFormInvalidMessage = false"
+					@focusout="clearRoomCodeSrError"
 				>
 					Join
 				</button>
-				<p class="sr-only" aria-live="assertive">
-					{{ isRoomCodeInvalid && showFormInvalidMessage ? 'Error: invalid code or link' : '' }}
-				</p>
+				<p id="roomCodeSrError" class="sr-only" aria-live="assertive" />
 			</form>
 		</div>
 

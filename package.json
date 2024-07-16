@@ -18,28 +18,28 @@
 	},
 	"dependencies": {
 		"@nuxthub/core": "^0.7.1",
-		"@unocss/nuxt": "^0.61.3",
-		"@unocss/reset": "^0.61.3",
+		"@unocss/nuxt": "^0.61.4",
+		"@unocss/reset": "^0.61.4",
 		"consola": "^3.2.3",
 		"crossws": "^0.2.4",
 		"drizzle-orm": "^0.32.0",
 		"valibot": "^0.36.0"
 	},
 	"devDependencies": {
-		"@antfu/eslint-config": "^2.22.0",
+		"@antfu/eslint-config": "^2.22.4",
 		"@iconify-json/ph": "^1.1.13",
 		"@nuxt/eslint": "^0.3.13",
 		"@nuxt/eslint-config": "^0.3.13",
 		"@nuxtjs/color-mode": "^3.4.2",
-		"@unocss/eslint-config": "^0.61.3",
-		"@unocss/preset-icons": "^0.61.3",
+		"@unocss/eslint-config": "^0.61.4",
+		"@unocss/preset-icons": "^0.61.4",
 		"@vueuse/nuxt": "^10.11.0",
 		"drizzle-kit": "^0.23.0",
-		"eslint": "^9.6.0",
+		"eslint": "^9.7.0",
 		"eslint-plugin-format": "^0.1.2",
 		"nuxt": "^3.12.3",
 		"typescript": "^5.5.3",
 		"vue-tsc": "^2.0.26",
-		"wrangler": "^3.64.0"
+		"wrangler": "^3.65.0"
 	}
 }

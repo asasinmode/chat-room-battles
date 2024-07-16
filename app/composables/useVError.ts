@@ -33,9 +33,18 @@ function create(message: string, prefix?: string, unrecoverable = false) {
 	open?.();
 }
 
-function handle(prefix: string, error: unknown) {
+function handle(
+	prefix: string,
+	error: unknown,
+	badRequestHandler?: (body: Record<string, string[]>) => void,
+) {
 	console.error(error);
 	if (error instanceof FetchError) {
+		if (error.statusCode === 400 && badRequestHandler) {
+			badRequestHandler(error.data);
+			return;
+		}
+
 		const knownError = errorCodesToData[error.data as IErrorCode];
 		if (knownError) {
 			errors.value.push(new VError(knownError.message, prefix, knownError.unrecoverable));
