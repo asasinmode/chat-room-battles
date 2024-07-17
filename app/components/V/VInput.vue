@@ -11,8 +11,6 @@ const props = defineProps<{
 	classInputContainer?: any;
 	validation?: v.BaseSchema<unknown, unknown, v.BaseIssue<unknown>>;
 	inputTransform?: (value: string) => string;
-	srErrorId?: string;
-	srErrorText?: string;
 }>();
 
 const modelValue = defineModel<string>({ required: true });
@@ -25,7 +23,6 @@ const computedError = computed(() =>
 	serverErrors.value?.[0] || errors.value[0]?.message,
 );
 const isInvalid = computed(() => !!(isDirty.value && computedError.value));
-const isSrErrorSetUp = computed(() => !!(props.srErrorId && props.srErrorText));
 
 function handleInput(event: Event) {
 	const { value } = event.target as HTMLInputElement;
@@ -53,7 +50,6 @@ function validate(openDialog = true): boolean {
 		errors.value = result.issues;
 		if (openDialog && errorDialog.value) {
 			errorDialog.value.open = true;
-			showSrError();
 		}
 	}
 
@@ -78,15 +74,6 @@ function handleDialogFocusOut(event: FocusEvent) {
 	}
 }
 
-function showSrError() {
-	if (isSrErrorSetUp.value) {
-		const errorElement = document.getElementById(props.srErrorId!);
-		if (errorElement) {
-			errorElement.textContent = props.srErrorText!;
-		}
-	}
-}
-
 defineExpose({
 	validate() {
 		isDirty.value = true;
@@ -94,11 +81,8 @@ defineExpose({
 	},
 	handleServerErrors(errors?: string[]) {
 		serverErrors.value = errors;
-		if (errors?.length) {
-			showSrError();
-			if (errorDialog.value) {
-				errorDialog.value.open = true;
-			}
+		if (errors?.length && errorDialog.value) {
+			errorDialog.value.open = true;
 		}
 	},
 });

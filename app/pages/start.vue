@@ -33,21 +33,31 @@ async function joinRoom() {
 
 	isRoomCodeInvalid.value = !roomCodeInput.value.validate();
 	if (isRoomCodeInvalid.value) {
+		showRoomCodeSrError();
 		return;
 	}
 
 	isJoiningRoom.value = true;
 	try {
-		const room = await $fetch('/api/rooms/join', { method: 'post', body: '' });
+		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCodeInput.value });
 		console.log('room', room);
 	} catch (e) {
-		useVError().handle('joining room', e, ({ code }) => roomCodeInput.value?.handleServerErrors(code));
+		useVError().handle('joining room', e, ({ code }) => {
+			roomCodeInput.value?.handleServerErrors(code);
+			code?.length && showRoomCodeSrError();
+		});
 	} finally {
 		isJoiningRoom.value = false;
 	}
 }
 
-const roomCodeSrError = ref<HTMLPreElement>();
+const roomCodeSrError = ref<HTMLParagraphElement>();
+
+function showRoomCodeSrError() {
+	if (roomCodeSrError.value) {
+		roomCodeSrError.value.textContent = 'Error: invalid code or link';
+	}
+}
 
 function clearRoomCodeSrError() {
 	if (roomCodeSrError.value) {
@@ -85,8 +95,6 @@ function clearRoomCodeSrError() {
 					class="w-16 text-center"
 					placeholder="A1B2C"
 					aria-required="true"
-					sr-error-text="invalid code or link"
-					sr-error-id="roomCodeSrError"
 					:validation="roomCodeValidation"
 					:input-transform="value => value.toUpperCase()"
 				/>
@@ -96,7 +104,7 @@ function clearRoomCodeSrError() {
 				>
 					Join
 				</button>
-				<p id="roomCodeSrError" class="sr-only" aria-live="assertive" />
+				<p ref="roomCodeSrError" aria-live="assertive" class="sr-only" />
 			</form>
 		</div>
 
