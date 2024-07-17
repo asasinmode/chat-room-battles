@@ -11,7 +11,7 @@ class RoomManager {
 	}
 
 	/**
-	 * @throws Throws if creating room fails
+	 * @throws If creating room fails
 	 */
 	async createRoom(): Promise<IServerRoom> {
 		const code = await this.createRoomCode();
@@ -30,7 +30,7 @@ class RoomManager {
 	}
 
 	/**
-	 * @throws Throws if creating new code fails 10 times
+	 * @throws If creating new code fails 10 times
 	 */
 	async createRoomCode(): Promise<string> {
 		let code = generateCode();

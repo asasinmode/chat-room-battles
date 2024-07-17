@@ -36,12 +36,12 @@ function create(message: string, prefix?: string, unrecoverable = false) {
 function handle(
 	prefix: string,
 	error: unknown,
-	badRequestHandler?: (body: Record<string, string[]>) => void,
+	errorResponseHandlers: Record<number, (body: any) => void> = {},
 ) {
 	console.error(error);
 	if (error instanceof FetchError) {
-		if (error.statusCode === 400 && badRequestHandler) {
-			badRequestHandler(error.data);
+		if (error.statusCode && error.statusCode in errorResponseHandlers) {
+			errorResponseHandlers[error.statusCode]?.(error.data);
 			return;
 		}
 

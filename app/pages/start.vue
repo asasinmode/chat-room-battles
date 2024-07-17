@@ -39,12 +39,18 @@ async function joinRoom() {
 
 	isJoiningRoom.value = true;
 	try {
-		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCodeInput.value });
+		const room = await $fetch('/api/rooms/join', { method: 'post', body: roomCode.value });
 		console.log('room', room);
 	} catch (e) {
-		useVError().handle('joining room', e, ({ code }) => {
-			roomCodeInput.value?.handleServerErrors(code);
-			code?.length && showRoomCodeSrError();
+		useVError().handle('joining room', e, {
+			400: ({ code }) => {
+				roomCodeInput.value?.handleServerErrors(code);
+				code?.length && showRoomCodeSrError();
+			},
+			404: ({ code }) => {
+				roomCodeInput.value?.handleServerErrors(code);
+				code?.length && showRoomCodeSrError(`Error: ${code[0]}`);
+			},
 		});
 	} finally {
 		isJoiningRoom.value = false;
@@ -53,9 +59,9 @@ async function joinRoom() {
 
 const roomCodeSrError = ref<HTMLParagraphElement>();
 
-function showRoomCodeSrError() {
+function showRoomCodeSrError(text = 'Error: invalid code or link') {
 	if (roomCodeSrError.value) {
-		roomCodeSrError.value.textContent = 'Error: invalid code or link';
+		roomCodeSrError.value.textContent = text;
 	}
 }
 

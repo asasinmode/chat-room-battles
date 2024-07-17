@@ -12,7 +12,13 @@ export default defineEventHandler(async (event) => {
 		};
 	}
 
-	console.log('joining room', code, validationResult.output);
+	const roomManager = useRoomManager();
+	const room = roomManager.rooms.find(r => r.code === validationResult.output.toUpperCase());
 
-	return 'a room :)';
+	if (!room) {
+		setResponseStatus(event, 404);
+		return { code: ['Room with given code not found'] };
+	}
+
+	return room;
 });
