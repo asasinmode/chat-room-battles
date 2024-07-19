@@ -1,5 +1,4 @@
 import { randomUUID } from 'node:crypto';
-import { sql } from 'drizzle-orm';
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 export const room = sqliteTable('room', {
@@ -8,7 +7,7 @@ export const room = sqliteTable('room', {
 	code: text('code').notNull().$defaultFn(generateCode),
 	startedAt: integer('startedAt', { mode: 'timestamp' }),
 	finishedAt: integer('finishedAt', { mode: 'timestamp' }),
-	createdAt: integer('createdAt', { mode: 'timestamp' }).notNull().default(sql`NOW()`),
+	createdAt: integer('createdAt', { mode: 'timestamp' }).notNull(),
 });
 
 const codeCharacters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

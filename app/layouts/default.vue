@@ -8,7 +8,7 @@
 			<NuxtLink
 				v-if="!$route.meta.isHomePage"
 				title="go back"
-				class="base-button-hoverable aspect-1 w-10 flex-center rounded-1/2 -mr-2"
+				class="aspect-1 w-10 flex-center rounded-1/2 -mr-2 base-button-hoverable"
 				to="/"
 			>
 				<span class="sr-only">go back</span>
