@@ -8,6 +8,10 @@ const { open, setRoom } = useGameRoom();
 const isCreatingRoom = ref(false);
 
 async function createRoom() {
+	if (isCreatingRoom.value) {
+		return;
+	}
+
 	isCreatingRoom.value = true;
 	try {
 		const room = await $fetch('/api/rooms', { method: 'post' });
@@ -27,6 +31,10 @@ const isRoomCodeInvalid = ref(false);
 const roomCodeInput = ref<InstanceType<typeof VInput>>();
 
 async function joinRoom() {
+	if (isJoiningRoom.value) {
+		return;
+	}
+
 	if (!roomCodeInput.value) {
 		throw new VError('code input element not found', 'joining room', true);
 	}
@@ -106,9 +114,16 @@ function clearRoomCodeSrError() {
 				/>
 				<button
 					class="ml-2 w-fit self-end justify-self-start button-blue-4 dark:bg-blue-6 dark:hoverable:bg-blue-5 hoverable:bg-blue-5"
+					:aria-busy="isJoiningRoom"
 					@focusout="clearRoomCodeSrError"
 				>
-					Join
+					<BouncingText
+						text="join"
+						class="fast"
+						style="--bounce-duration: 1.5s"
+						dots-only
+						:is-bouncing="isJoiningRoom"
+					/>
 				</button>
 				<p ref="roomCodeSrError" aria-live="assertive" class="sr-only" />
 			</form>

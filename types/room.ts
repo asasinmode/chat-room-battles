@@ -14,12 +14,10 @@ interface IPayloadShop {
 
 export type IWSPayload = IPayloadReconnectRoom | IPayloadShop;
 
-export type IErrorCode = 'roomNotFound';
-
 interface IResponseError {
 	type: 'error';
 	data: {
-		code: IErrorCode;
+		code: 'roomNotFound';
 	};
 }
 

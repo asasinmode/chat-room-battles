@@ -20,11 +20,12 @@ export class VError extends Error implements IError {
 	}
 }
 
+const unknownError = new VError('unknown error', undefined, true);
+
 const errors = ref<VError[]>([]);
 const errorCodesToData: Record<IErrorCode, IError> = {
 	roomCodeGenerationLimitReached: { message: 'code generation limit reached' },
 };
-const unknownError = new VError('unknown error', undefined, true);
 
 let open: (() => void) | undefined;
 

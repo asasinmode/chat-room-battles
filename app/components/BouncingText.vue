@@ -3,6 +3,7 @@ const props = defineProps<{
 	text: string;
 	isBouncing?: boolean;
 	absoluteDots?: boolean;
+	dotsOnly?: boolean;
 }>();
 
 const computedText = computed(() => (props.isBouncing ? props.text.concat('...') : props.text));
@@ -15,10 +16,16 @@ const computedText = computed(() => (props.isBouncing ? props.text.concat('...')
 			v-for="(letter, index) in computedText.split('')"
 			:key="index"
 			:class="[
-				letter === ' ' ? 'w-1' : letter === '.' ? `bouncing-dot${
-					absoluteDots ? ' absolute -right-1' : ''
-				}` : '',
-				isBouncing ? 'bouncing-letter' : '',
+				letter === ' '
+					? 'w-1'
+					: letter === '.'
+						? `bouncing-dot${absoluteDots ? ' absolute -right-1' : ''}`
+						: '',
+				isBouncing
+					? `bouncing-letter${dotsOnly
+						? letter === '.' ? ' absolute left-[calc(50%_-_0.4rem)]' : ' opacity-0'
+						: ''}`
+					: '',
 			]"
 			:style="`--letter-index: ${index}`"
 			class="inline-block transform-gpu"

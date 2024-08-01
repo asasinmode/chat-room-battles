@@ -1,5 +1,6 @@
 import type { IClientRoom, IServerRoom } from '~~/types/room';
 
+// TMP workaround until https://github.com/unjs/nitro/issues/2612
 type IResponse = IClientRoom;
 
 export default defineEventHandler(async (event): Promise<IResponse> => {

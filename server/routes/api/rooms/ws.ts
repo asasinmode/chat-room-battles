@@ -1,8 +1,9 @@
 import { randomUUID } from 'node:crypto';
-import type { Peer } from 'crossws';
 import type { IRoomWSResponse, IWSPayload } from '~~/types/room';
 
 const roomManager = useRoomManager();
+
+type Peer = Parameters<Required<Parameters<typeof defineWebSocketHandler>[0]>['message']>[0];
 
 export default defineWebSocketHandler({
 	open(peer) {
